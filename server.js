@@ -23,6 +23,7 @@ app.use(express.json());
 app.use("/api/user",require("./routes/user"));
 app.use("/api/course",require("./routes/course"));
 app.use("/api/lesson",require("./routes/lesson"));
+app.use("/api/quiz",require("./routes/quiz"));
 
 //3- create port
 const port = process.env.PORT

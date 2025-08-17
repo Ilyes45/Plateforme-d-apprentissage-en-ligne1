@@ -1,5 +1,5 @@
 const express = require('express');
-const isauth = require('../midlleware/isauth');
+const isauth = require('../midlleware/isAuth');
 const isAdmin = require('../midlleware/isAdmin');
 const { getAllLessons, createLesson, getOneLesson, deleteLesson, editLesson } = require('../controllers/lesson');
 

@@ -1,50 +1,63 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useParams, useNavigate } from 'react-router-dom';
-import { getLessons } from '../../JS/Actions/lesson';
-import LessonCard from '../LessonCard/LessonCard';  // Import du composant LessonCard
-import { Spinner, Alert, Button } from 'react-bootstrap';
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getLessons } from "../../JS/Actions/lesson";
+import LessonCard from "../LessonCard/LessonCard";
+import { Spinner, Alert, Button } from "react-bootstrap";
+import { useParams, useNavigate } from "react-router-dom";
 
 const LessonList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const { courseId } = useParams();
 
-  const { listLessons, load, error } = useSelector(state => state.lessonReducer);
-  const listCourses = useSelector(state => state.courseReducer.listCourses); // récupère les cours
-  const course = listCourses.find(c => c._id === courseId); // récupère le cours actuel
+  const { listLessons, load, error } = useSelector((state) => state.lessonReducer);
+  const listCourses = useSelector((state) => state.courseReducer.listCourses);
+  const user = useSelector((state) => state.userReducer.user);
 
   useEffect(() => {
-    if (courseId) {
-      console.log("courseId:", courseId);
-      dispatch(getLessons(courseId));
-    }
+    if (courseId) dispatch(getLessons(courseId));
   }, [dispatch, courseId]);
 
-  if (load) return <Spinner animation="border" variant="primary" />;
+  if (!listCourses || listCourses.length === 0)
+    return <p>Chargement des cours en cours...</p>;
 
+  const course = listCourses.find((c) => c._id === courseId);
+  if (!course) return <p>Cours non trouvé...</p>;
+
+  if (load) return <Spinner animation="border" variant="primary" />;
   if (error)
     return (
       <Alert variant="danger">
-        Erreur lors du chargement des leçons : {error.data?.message || error.message || 'Erreur inconnue'}
+        Erreur : {error.message || "Erreur inconnue"}
       </Alert>
     );
 
-  if (!listLessons || listLessons.length === 0) {
+  if (!listLessons || listLessons.length === 0)
     return <p>Aucune leçon trouvée pour ce cours.</p>;
-  }
 
   return (
     <div className="row">
-      {listLessons.map((lesson) => (
-        <div key={lesson._id} className="col-md-4">
-          <LessonCard lesson={lesson} course={course} listLessons={listLessons} />
-        </div>
-      ))}
-      <Button variant="secondary" onClick={() => navigate('/cours')}>
-  Retour aux cours
-</Button>
+      {listLessons.map((lesson, index) => {
+        // Seule la première leçon est accessible
+        const isDisabled = index !== 0;
+
+        return (
+          <div key={lesson._id} className="col-md-4">
+            <LessonCard
+              lesson={lesson}
+              course={course}
+              listLessons={listLessons}
+              index={index}
+              user={user}
+              isDisabled={isDisabled}
+            />
+          </div>
+        );
+      })}
+
+      <Button variant="secondary" onClick={() => navigate("/cours")}>
+        Retour aux cours
+      </Button>
     </div>
   );
 };

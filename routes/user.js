@@ -2,7 +2,7 @@
 const express = require('express');
 const { register, login ,updateUser,getUser} = require('../controllers/user');
 const { registerValidation, loginValidation, validate } = require('../midlleware/valdation');
-const isauth = require('../midlleware/isauth');
+const isauth = require('../midlleware/isAuth');
 const cloudinary = require("../utils/cloudinary");
 const upload = require("../utils/multer");
 

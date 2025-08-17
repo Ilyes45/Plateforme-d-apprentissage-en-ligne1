@@ -18,6 +18,9 @@ import AddLesson from './Pages/AddLesson/AddLesson';
 import EditLesson from './Pages/EditLesson/EditLesson';
 import LessonDetails from './Pages/LessonDetails/LessonDetails';
 import EditProfile from './Pages/EditProfile/EditProfile';
+import AddQuiz from './Pages/AddQuiz/AddQuiz';
+import Quiz from './Pages/Quiz/Quiz';
+import EditQuiz from './Pages/EditQuiz/EditQuiz';
 
 
 function App() {
@@ -47,6 +50,12 @@ useEffect(()=>{
 <Route path="/add-lesson/:courseId" element={<AddLesson />} />
 <Route path="/edit-lesson/:lessonId" element={<EditLesson />} />
 <Route path="/lesson/:id" element={<LessonDetails />} />
+
+<Route path="/course/:courseId/lesson/:lessonId/addquiz" element={<AddQuiz />} />
+ <Route path="/quiz/:quizId" element={<Quiz />} />
+ <Route path="/edit-quiz/:id" element={<EditQuiz />} />
+ 
+
 
   <Route path='/*' element={<Error />} />
 </Routes>

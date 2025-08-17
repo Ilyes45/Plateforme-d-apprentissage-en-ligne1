@@ -1,47 +1,48 @@
-//1- require mongoose
+// 1 - Require mongoose
 const mongoose = require('mongoose');
 
-
-//2- create schema
-
+// 2 - Create schema
 const userSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: true
-    },
-    email: {
-        type: String,
-        required: true,
-        unique: true
-    },
-    password: {
-        type: String,
-        required: true
-    },
-    phone: {
-        type: Number,
-        required: true
-    },
-    image: {
-        type: String
-    },
-    cloudinary_id:{
-        type: String
+  name: {
+    type: String,
+    required: true
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  password: {
+    type: String,
+    required: true
+  },
+  phone: {
+    type: Number,
+    required: true
+  },
+  image: {
+    type: String
+  },
+  cloudinary_id: {
+    type: String
+  },
+  role: {
+    type: String,
+    enum: ['user', 'admin'],
+    default: 'user'
+  },
+  registeredAt: {
+    type: Date,
+    default: Date.now
+  },
+  completedQuizzes: [{ // <-- nouveau champ
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Quiz'
+  }]
+});
 
-    } ,
-     role: {
-        type: String,
-        enum: ['user', 'admin'],
-        default: 'user' 
-},
-registeredAt: {
-        type: Date,
-        default: Date.now,
-  }
-
-})
-//3- create model
+// 3 - Create model
 const User = mongoose.model('User', userSchema);
 
-//4- export model
+// 4 - Export model
 module.exports = User;
