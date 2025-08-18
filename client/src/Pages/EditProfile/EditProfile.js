@@ -61,6 +61,10 @@ const EditProfile = () => {
     }
   };
 
+  const handleCancel = () => {
+    navigate('/profile'); // Redirige vers la page profil sans enregistrer
+  };
+
   return (
     <div className="edit-profile-page">
       <div className="edit-profile-container">
@@ -95,7 +99,10 @@ const EditProfile = () => {
             placeholder="Téléphone"
           />
           <input type="file" name="image" onChange={handleFileChange} />
-          <button type="submit" className="btn-primary">Enregistrer</button>
+          <div className="button-group">
+            <button type="submit" className="btn-primary">Enregistrer</button>
+            <button type="button" className="btn-cancel" onClick={handleCancel}>Annuler</button>
+          </div>
         </form>
       </div>
     </div>

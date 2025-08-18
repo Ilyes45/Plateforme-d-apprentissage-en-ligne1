@@ -8,6 +8,7 @@
   padding: 20px;
 }
 
+/* Conteneur du formulaire */
 .edit-profile-container {
   width: 100%;
   max-width: 500px;
@@ -25,6 +26,7 @@
   transform: translateY(-5px);
 }
 
+/* Titre du formulaire */
 .edit-profile-container h2 {
   margin-bottom: 25px;
   color: #333;
@@ -32,12 +34,14 @@
   text-align: center;
 }
 
+/* Formulaire */
 .edit-profile-container form {
   width: 100%;
   display: flex;
   flex-direction: column;
 }
 
+/* Inputs */
 .edit-profile-container input[type="text"],
 .edit-profile-container input[type="email"],
 .edit-profile-container input[type="password"],
@@ -57,28 +61,54 @@
   box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
 }
 
-.edit-profile-container button {
+/* Groupe de boutons pour alignement horizontal */
+.edit-profile-container .button-group {
+  display: flex;
+  gap: 10px;
   margin-top: 20px;
-  width: 100%;
-  font-weight: 600;
-  padding: 10px 0;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-  border: none;
 }
 
+/* Bouton Enregistrer */
 .edit-profile-container .btn-primary {
   background: #007bff;
   color: #fff;
+  flex: 1; /* Même largeur que le bouton Annuler */
+  padding: 10px 0;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .edit-profile-container .btn-primary:hover {
   background: #0056b3;
 }
 
+/* Bouton Annuler */
+.edit-profile-container .btn-cancel {
+  background: #6c757d;
+  color: #fff;
+  flex: 1;
+  padding: 10px 0;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.edit-profile-container .btn-cancel:hover {
+  background: #5a6268;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .edit-profile-container {
     padding: 20px;
+  }
+
+  .edit-profile-container .button-group {
+    flex-direction: column;
   }
 }
