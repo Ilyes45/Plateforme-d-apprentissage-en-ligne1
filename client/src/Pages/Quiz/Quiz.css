@@ -1,0 +1,87 @@
+.quiz-container { /* Changed from .container to .quiz-container for uniqueness */
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.quiz-container h2 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+}
+
+.quiz-container h3 {
+  font-size: 1.5rem;
+  color: #34495e;
+  margin-bottom: 1rem;
+}
+
+.quiz-container h5 {
+  font-size: 1.2rem;
+  color: #2c3e50;
+  margin-bottom: 1rem;
+}
+
+.quiz-container .question-section { /* Added for grouping question content */
+  text-align: left;
+  margin-bottom: 1.5rem;
+}
+
+.quiz-container .option-label {
+  display: block;
+  margin: 0.75rem 0;
+  font-size: 1rem;
+  color: #34495e;
+  text-align: left;
+  padding-left: 2rem;
+  position: relative;
+}
+
+.quiz-container .option-label input[type="radio"] {
+  margin-right: 0.5rem;
+  transform: scale(1.2);
+  vertical-align: middle;
+  accent-color: #007bff;
+}
+
+.quiz-container .quiz-button { /* Unique class for quiz buttons */
+  background-color: #007bff;
+  color: #ffffff;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.quiz-container .quiz-button:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+}
+
+.quiz-container .finished-buttons {
+  margin-top: 1.5rem;
+}
+
+.quiz-container .finished-buttons button {
+  background-color: #10b981; /* Matches navbar register button color */
+  color: #ffffff;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  margin: 0 0.5rem;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.quiz-container .finished-buttons button:hover {
+  background-color: #059669;
+  transform: translateY(-2px);
+}

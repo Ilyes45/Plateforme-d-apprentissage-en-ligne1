@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { addCourse } from '../../JS/Actions/course';
 import { Button, Form } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import './Addcourse.css';
 
 const Addcourse = () => {
 

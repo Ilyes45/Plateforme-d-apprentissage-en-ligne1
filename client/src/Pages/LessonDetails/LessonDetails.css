@@ -1,0 +1,23 @@
+/* Navigation Précédent / Suivant */
+.lesson-navigation-btns .btn-group {
+  display: flex;
+  justify-content: center;
+  gap: 40px; /* espace entre Précédent et Suivant */
+  margin-bottom: 30px;
+}
+
+/* Bouton Retour aux leçons */
+.back-button-btn {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 40px;
+}
+
+/* Quiz buttons centrés */
+.quiz-btn-group {
+  display: flex;
+  justify-content: center; /* centrer */
+  gap: 15px; /* espace entre Voir Quiz, Éditer, Supprimer */
+  flex-wrap: wrap;
+  margin-top: 10px;
+}

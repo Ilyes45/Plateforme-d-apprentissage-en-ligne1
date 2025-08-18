@@ -1,0 +1,32 @@
+/* Container principal de la liste de cours */
+.course-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto; /* centre la grille */
+}
+
+/* Message de chargement ou absence de cours */
+.course-grid h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #374151;
+  text-align: center;
+  margin-top: 20px;
+}
+
+/* CourseCard container */
+.course-card-container {
+  margin: 0; /* supprime margin-top pour rapprocher du titre */
+  margin-bottom: 20px; /* espace entre les cartes seulement */
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .course-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+}

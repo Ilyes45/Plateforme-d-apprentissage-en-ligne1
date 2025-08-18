@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useMatch, useNavigate } from 'react-router-dom';
 import { editCourse, getCourse } from '../../JS/Actions/course';
 import { Button, Form } from 'react-bootstrap';
+import './EditCourse.css';
 
 const EditCourse = () => {
   const dispatch = useDispatch();
@@ -51,7 +52,7 @@ const EditCourse = () => {
 
   return (
     <div className='edit-product-container'>
-      <h2>Edit Product</h2>
+      <h2>Edit Course</h2>
       <Form>
         <Form.Label>Title</Form.Label>
         <Form.Control

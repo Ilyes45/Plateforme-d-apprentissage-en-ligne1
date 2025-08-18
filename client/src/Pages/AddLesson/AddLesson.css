@@ -1,0 +1,85 @@
+.add-lesson-container {
+  max-width: 600px;
+  margin: 50px auto; /* centrer horizontalement */
+  padding: 30px 40px;
+  background: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* centre vertical dans la card */
+  align-items: center;     /* centre horizontal dans la card */
+  transition: transform 0.3s ease;
+}
+
+.add-lesson-container:hover {
+  transform: translateY(-5px);
+}
+
+.add-lesson-container h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #333;
+  font-weight: 700;
+}
+
+.add-lesson-container form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.add-lesson-container input,
+.add-lesson-container textarea {
+  width: 100%;
+  padding: 10px 12px;
+  margin-top: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  font-size: 16px;
+}
+
+.add-lesson-container input:focus,
+.add-lesson-container textarea:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+}
+
+.add-lesson-container textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.add-lesson-container .btn {
+  margin-top: 20px;
+  width: 100%;
+  font-weight: 600;
+  padding: 10px 0;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.add-lesson-container .btn-primary {
+  background: #007bff;
+  border: none;
+}
+
+.add-lesson-container .btn-primary:hover {
+  background: #0056b3;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .add-lesson-container {
+    padding: 20px;
+    margin: 30px 10px;
+  }
+
+  .add-lesson-container .btn {
+    width: 100%;
+  }
+}

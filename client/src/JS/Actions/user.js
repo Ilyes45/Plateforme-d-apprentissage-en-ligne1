@@ -81,3 +81,13 @@ export const getUser = (id) => async (dispatch) => {
     dispatch({ type: FAIL_USER, payload: error.response });
   }
 };
+export const completeLessonAction = (lessonId) => async (dispatch) => {
+  try {
+    const config = { headers: { authorization: localStorage.getItem("token") } };
+    const response = await axios.post(`/api/user/lesson/${lessonId}/complete`, {}, config);
+    dispatch(current()); // recharge l'utilisateur pour mettre à jour completedLessons
+    return response.data;
+  } catch (error) {
+    console.error("Erreur completeLessonAction:", error.response?.data || error.message);
+  }
+};

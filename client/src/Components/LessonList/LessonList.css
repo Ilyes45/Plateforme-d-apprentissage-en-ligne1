@@ -1,0 +1,23 @@
+.lesson-list-container {
+  padding: 20px;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.lesson-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  justify-items: center;
+  margin-top: 10px;
+  /* ❌ supprime flex-grow pour ne pas pousser le bouton en bas */
+}
+
+.lesson-list-container .back-button {
+  margin-top: 20px; /* espace propre sous la liste */
+  margin-bottom: 30px;
+  display: flex;
+  justify-content: center;
+}

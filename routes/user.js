@@ -1,6 +1,6 @@
 // require express
 const express = require('express');
-const { register, login ,updateUser,getUser} = require('../controllers/user');
+const { register, login ,updateUser,getUser,markQuizCompleted,completeLesson } = require('../controllers/user');
 const { registerValidation, loginValidation, validate } = require('../midlleware/valdation');
 const isauth = require('../midlleware/isAuth');
 const cloudinary = require("../utils/cloudinary");
@@ -32,6 +32,10 @@ router.get("/current",isauth,(req,res)=>{
 router.put('/:id', isauth, upload.single("image"), updateUser);
 
 router.get('/:id', isauth, getUser);
+
+router.post("/:quizId/complete", isauth,  markQuizCompleted);
+
+router.post("/lesson/:lessonId/complete", isauth, completeLesson);
  
 //3- export router
 module.exports = router;

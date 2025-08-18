@@ -1,0 +1,21 @@
+.register-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;      /* Centre horizontalement */
+  padding-top: 60px;        /* Un peu d'espace en haut */
+  min-height: 100vh;        /* Pleine hauteur de page */
+  background-color: #f8f9fa;
+}
+
+.register-container h1 {
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+form {
+  width: 300px;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}

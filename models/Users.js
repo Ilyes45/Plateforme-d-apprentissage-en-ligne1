@@ -35,9 +35,13 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
-  completedQuizzes: [{ // <-- nouveau champ
+  completedQuizzes: [{ // Quiz déjà validés
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Quiz'
+  }],
+  completedLessons: [{ // Leçons déjà validées
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Lesson'
   }]
 });
 

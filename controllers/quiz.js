@@ -71,25 +71,4 @@ exports.deleteQuiz = async (req, res) => {
 
 
 
-// Marquer un quiz comme complété
-exports.markQuizCompleted = async (req, res) => {
-  try {
-    const userId = req.user._id;
-    const { quizId } = req.params;
 
-    const user = await User.findById(userId);
-    if (!user) return res.status(404).json({ message: "Utilisateur introuvable" });
-
-    if (user.completedQuizzes.includes(quizId)) {
-      return res.status(400).json({ message: "Quiz déjà complété" });
-    }
-
-    user.completedQuizzes.push(quizId);
-    await user.save();
-
-    res.json({ message: "Quiz complété avec succès" });
-  } catch (error) {
-    console.error("Erreur markQuizCompleted:", error);
-    res.status(500).json({ message: error.message });
-  }
-};

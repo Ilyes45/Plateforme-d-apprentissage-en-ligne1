@@ -1,0 +1,44 @@
+.lesson-card {
+  width: 80%;
+  height: 400px !important;
+  border-radius: 15px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.lesson-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+.lesson-card .card-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.lesson-card .badge {
+  font-size: 0.8rem;
+}
+
+.lesson-card .button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.lesson-card button {
+  margin-top: 10px;
+  width: 100%;
+}
+
+@media (max-width: 480px) {
+  .lesson-card {
+    width: 100%;
+  }
+}

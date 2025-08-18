@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { editUser, getUser } from '../../JS/Actions/user';
+import './EditProfile.css'; // Import du CSS
 
 const EditProfile = () => {
   const { id } = useParams();
@@ -20,9 +21,7 @@ const EditProfile = () => {
   const [image, setImage] = useState(null);
 
   useEffect(() => {
-    if (id) {
-      dispatch(getUser(id));
-    }
+    if (id) dispatch(getUser(id));
   }, [dispatch, id]);
 
   useEffect(() => {
@@ -63,40 +62,42 @@ const EditProfile = () => {
   };
 
   return (
-    <div className="edit-user">
-      <h2>Edit User</h2>
-      <form onSubmit={handleSave} encType="multipart/form-data">
-        <input
-          type="text"
-          name="name"
-          value={updatedUser.name}
-          onChange={handleChange}
-          placeholder="Name"
-        />
-        <input
-          type="email"
-          name="email"
-          value={updatedUser.email}
-          onChange={handleChange}
-          placeholder="Email"
-        />
-        <input
-          type="password"
-          name="password"
-          value={updatedUser.password}
-          onChange={handleChange}
-          placeholder="New Password"
-        />
-        <input
-          type="text"
-          name="phone"
-          value={updatedUser.phone}
-          onChange={handleChange}
-          placeholder="Phone"
-        />
-        <input type="file" name="image" onChange={handleFileChange} />
-        <button type="submit">Save Changes</button>
-      </form>
+    <div className="edit-profile-page">
+      <div className="edit-profile-container">
+        <h2>Modifier le profil</h2>
+        <form onSubmit={handleSave} encType="multipart/form-data">
+          <input
+            type="text"
+            name="name"
+            value={updatedUser.name}
+            onChange={handleChange}
+            placeholder="Nom"
+          />
+          <input
+            type="email"
+            name="email"
+            value={updatedUser.email}
+            onChange={handleChange}
+            placeholder="Email"
+          />
+          <input
+            type="password"
+            name="password"
+            value={updatedUser.password}
+            onChange={handleChange}
+            placeholder="Nouveau mot de passe"
+          />
+          <input
+            type="text"
+            name="phone"
+            value={updatedUser.phone}
+            onChange={handleChange}
+            placeholder="Téléphone"
+          />
+          <input type="file" name="image" onChange={handleFileChange} />
+          <button type="submit" className="btn-primary">Enregistrer</button>
+        </form>
+      </div>
     </div>
   );
 };

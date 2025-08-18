@@ -27,7 +27,7 @@ const Login = () => {
     }
         const result = await dispatch(login(user));
         if (result && result.payload && result.payload.token) {
-        navigate('/profile');
+        navigate('/cours');
     } else {
         alert("Email ou mot de passe incorrect !");
     }

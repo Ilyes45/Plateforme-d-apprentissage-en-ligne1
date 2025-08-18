@@ -1,0 +1,108 @@
+.edit-product-container {
+  max-width: 600px;
+  margin: 50px auto; /* centre horizontal */
+  padding: 30px 40px;
+  background: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+  /* Centrage vertical et horizontal du contenu */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* centre vertical */
+  align-items: center;     /* centre horizontal */
+  transition: transform 0.3s ease;
+}
+
+.edit-product-container:hover {
+  transform: translateY(-5px);
+}
+
+/* Centrer le titre */
+.edit-product-container h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+/* Inputs s'étendent sur toute la largeur disponible dans la card */
+.edit-product-container form {
+  width: 100%;
+}
+
+/* Styles labels et inputs */
+.edit-product-container label {
+  font-weight: 600;
+  margin-top: 15px;
+  display: block;
+  color: #555;
+}
+
+.edit-product-container input,
+.edit-product-container .form-control {
+  width: 100%;
+  padding: 10px 12px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.edit-product-container input:focus,
+.edit-product-container .form-control:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+}
+
+/* Boutons centrés et espacés */
+.edit-product-container .btn-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  width: 100%;
+}
+
+.edit-product-container .btn {
+  width: 48%;
+  font-weight: 600;
+  padding: 10px 0;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.edit-product-container .btn-primary {
+  background: #007bff;
+  border: none;
+}
+
+.edit-product-container .btn-primary:hover {
+  background: #0056b3;
+}
+
+.edit-product-container .btn-secondary {
+  background: #6c757d;
+  border: none;
+}
+
+.edit-product-container .btn-secondary:hover {
+  background: #5a6268;
+}
+
+/* Responsive pour mobile */
+@media (max-width: 768px) {
+  .edit-product-container {
+    padding: 20px;
+    margin: 30px 10px;
+  }
+
+  .edit-product-container .btn {
+    width: 100%;
+  }
+
+  .edit-product-container .btn-container {
+    flex-direction: column;
+    gap: 10px;
+  }
+}

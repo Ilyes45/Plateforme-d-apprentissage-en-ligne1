@@ -8,7 +8,7 @@ const {
   updateQuiz,
   deleteQuiz,
   getQuizByLessonId,
-  markQuizCompleted
+  
 } = require('../controllers/quiz');
 
 const router = express.Router();
@@ -19,5 +19,5 @@ router.get('/:id', getQuizById);
 router.get('/lesson/:lessonId', getQuizByLessonId);
 router.put('/:id', isauth, isAdmin, updateQuiz);
 router.delete('/:id', isauth, isAdmin, deleteQuiz);
-router.post("/:quizId/complete", isauth,  markQuizCompleted);
+
 module.exports = router;

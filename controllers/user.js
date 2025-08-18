@@ -75,9 +75,10 @@ exports.login = async (req, res) => {
 exports.updateUser = async (req, res) => {
     try {
         // Vérifier que l'utilisateur connecté modifie bien son propre profil
-        if (req.user.id !== req.params.id) {
-            return res.status(403).json({ message: "You are not authorized to update this user." });
-        }
+        if (req.user._id.toString() !== req.params.id) {
+   return res.status(403).json({ message: "You are not authorized to update this user." });
+}
+
 
         const { id } = req.params; // id de l'utilisateur à modifier
         const { name, email, phone, password } = req.body;
@@ -131,3 +132,63 @@ exports.getUser = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+
+// Marquer un quiz comme complété
+// Marquer un quiz comme complété
+exports.markQuizCompleted = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const { quizId } = req.params;
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "Utilisateur introuvable" });
+
+    if (user.completedQuizzes.includes(quizId)) {
+      return res.status(400).json({ message: "Quiz déjà complété" });
+    }
+
+    user.completedQuizzes.push(quizId);
+    await user.save();
+
+    res.status(200).json({ 
+      message: "Quiz complété avec succès", 
+      completedQuizzes: user.completedQuizzes 
+    });
+  } catch (error) {
+    console.error("Erreur markQuizCompleted:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
+
+// Marquer un quiz comme complété
+// Marquer une leçon comme complétée
+// Marquer une leçon comme complétée
+exports.completeLesson = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const { lessonId } = req.params;
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "Utilisateur introuvable" });
+
+    if (user.completedLessons.includes(lessonId)) {
+      return res.status(400).json({ message: "Lesson déjà complétée" });
+    }
+
+    user.completedLessons.push(lessonId);
+    await user.save();
+
+    res.status(200).json({ 
+      message: "Lesson marquée comme complétée", 
+      completedLessons: user.completedLessons 
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
+

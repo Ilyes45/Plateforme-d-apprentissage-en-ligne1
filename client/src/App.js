@@ -34,7 +34,7 @@ useEffect(()=>{
   return (
     <div className="App">
       <NavBar />
-      <h1>Plateforme d'apprentissage en ligne</h1>
+      
       <Routes>
   <Route path='/' element={<Home />} />
   <Route path='/register' element={<Register />} />

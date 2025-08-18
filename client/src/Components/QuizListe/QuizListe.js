@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getQuizzes } from '../../JS/Actions/quiz';
 import { Spinner, Alert } from 'react-bootstrap';
 import QuizCard from '../QuizCard/QuizCard';
+import './QuizListe.css';
 
 const QuizListe = ({ lessonId, lessonsList, courseId }) => {
   const dispatch = useDispatch();

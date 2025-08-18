@@ -1,0 +1,109 @@
+/* Container de la carte */
+.course-card-container {
+  margin-bottom: 20px;
+}
+
+/* Card principale */
+.course-card-container .card {
+  border-radius: 15px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%; /* occupe tout l'espace */
+  display: flex;
+  flex-direction: column;
+}
+
+.course-card-container .card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+}
+
+/* Contenu du body */
+.course-card-container .card-body {
+  flex: 1; /* pousse les boutons vers le bas */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Titre de la carte */
+.course-card-container .card-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 10px;
+}
+
+/* Texte */
+.course-card-container .card-text {
+  color: #4b5563;
+  font-size: 0.95rem;
+  margin-bottom: 10px;
+}
+
+/* Container des boutons */
+.course-card-container .card .d-flex {
+  margin-top: auto; /* colle les boutons en bas */
+  gap: 10px;
+}
+
+/* Boutons */
+.course-card-container .card button {
+  flex: 1;
+  padding: 8px;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: transform 0.2s ease, background 0.3s ease;
+}
+
+/* Variantes */
+.course-card-container .card button.btn-primary {
+  background-color: #3b82f6;
+  border: none;
+}
+
+.course-card-container .card button.btn-primary:hover {
+  background-color: #2563eb;
+  transform: translateY(-2px);
+}
+
+.course-card-container .card button.btn-danger {
+  background-color: #ef4444;
+  border: none;
+}
+
+.course-card-container .card button.btn-danger:hover {
+  background-color: #dc2626;
+  transform: translateY(-2px);
+}
+
+.course-card-container .card button.btn-warning {
+  background-color: #f59e0b;
+  border: none;
+}
+
+.course-card-container .card button.btn-warning:hover {
+  background-color: #d97706;
+  transform: translateY(-2px);
+}
+
+.course-card-container .card button.btn-success {
+  background-color: #16a34a;
+  border: none;
+}
+
+.course-card-container .card button.btn-success:hover {
+  background-color: #15803d;
+  transform: translateY(-2px);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .course-card-container .card {
+    width: 100% !important;
+  }
+
+  .course-card-container .card .d-flex {
+    flex-direction: column;
+  }
+}

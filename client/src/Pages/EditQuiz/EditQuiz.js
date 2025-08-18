@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { getQuiz, editQuiz } from "../../JS/Actions/quiz";
-
+import './EditQuiz.css';
 const EditQuiz = () => {
-  const { id } = useParams(); // ID du quiz
+  const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -17,12 +17,10 @@ const EditQuiz = () => {
     questions: [],
   });
 
-  // Charger le quiz à éditer
   useEffect(() => {
     dispatch(getQuiz(id));
   }, [dispatch, id]);
 
-  // Remplir le formulaire quand on reçoit le quiz
   useEffect(() => {
     if (quizToGet) {
       setFormData({
@@ -34,15 +32,12 @@ const EditQuiz = () => {
     }
   }, [quizToGet]);
 
-  
-  // Gestion des changements dans les questions
   const handleQuestionChange = (qIndex, field, value) => {
     const updatedQuestions = [...formData.questions];
     updatedQuestions[qIndex][field] = value;
     setFormData({ ...formData, questions: updatedQuestions });
   };
 
-  // Gestion des options
   const handleOptionChange = (qIndex, optIndex, value) => {
     const updatedQuestions = [...formData.questions];
     updatedQuestions[qIndex].options[optIndex] = value;
@@ -77,25 +72,47 @@ const EditQuiz = () => {
     setFormData({ ...formData, questions: updatedQuestions });
   };
 
-  // Soumettre les modifications
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(editQuiz(id, formData));
-    navigate(-1); // Retour à la page précédente
+    navigate(-1);
   };
 
   if (load) return <p>Chargement du quiz...</p>;
   if (!quizToGet) return <p>Quiz introuvable</p>;
 
   return (
-    <div className="container mt-4">
+    <div className="edit-quiz-container">
       <h2>Modifier le Quiz</h2>
       <form onSubmit={handleSubmit}>
-       
+        <div className="mb-3">
+          <label>Titre du quiz</label>
+          <input
+            type="text"
+            className="form-control"
+            value={formData.title}
+            onChange={(e) =>
+              setFormData({ ...formData, title: e.target.value })
+            }
+            required
+          />
+        </div>
+
+        <div className="mb-3">
+          <label>Description</label>
+          <textarea
+            className="form-control"
+            value={formData.description}
+            onChange={(e) =>
+              setFormData({ ...formData, description: e.target.value })
+            }
+            rows={3}
+          />
+        </div>
 
         <h4>Questions</h4>
         {formData.questions.map((q, qIndex) => (
-          <div key={qIndex} className="border p-3 mb-3">
+          <div key={qIndex} className="border p-3 mb-3 question-card">
             <div className="mb-2">
               <label>Question</label>
               <input
@@ -116,7 +133,9 @@ const EditQuiz = () => {
                     type="text"
                     className="form-control"
                     value={opt}
-                    onChange={(e) => handleOptionChange(qIndex, optIndex, e.target.value)}
+                    onChange={(e) =>
+                      handleOptionChange(qIndex, optIndex, e.target.value)
+                    }
                   />
                   <button
                     type="button"
@@ -164,13 +183,27 @@ const EditQuiz = () => {
           </div>
         ))}
 
-        <button type="button" className="btn btn-secondary mb-3" onClick={addQuestion}>
+        <button
+          type="button"
+          className="btn btn-secondary mb-3"
+          onClick={addQuestion}
+        >
           ➕ Ajouter une question
         </button>
 
-        <button type="submit" className="btn btn-primary">
-          Enregistrer les modifications
-        </button>
+        {/* Boutons Enregistrer et Annuler séparés */}
+        <div className="buttons-group">
+          <button type="submit" className="btn btn-primary">
+            Enregistrer
+          </button>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => navigate(-1)}
+          >
+            Annuler
+          </button>
+        </div>
       </form>
     </div>
   );

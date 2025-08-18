@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import './QuizCard.css'; // Assuming you have a CSS file for styling
 
 const QuizCard = ({ quiz, lessonsList, courseId, currentLessonId }) => {
   const navigate = useNavigate();

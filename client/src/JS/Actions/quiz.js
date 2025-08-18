@@ -1,4 +1,4 @@
-import axios from 'axios';
+  import axios from 'axios';
 import { SUCC_QUIZ, LOAD_QUIZ, FAIL_QUIZ, GET_QUIZ } from '../ActionsTypes/quiz';
 
 
@@ -81,5 +81,15 @@ export const getQuiz = (id) => async (dispatch) => {
   }
 };
 
+// Complete quiz
+export const completeQuiz = (quizId) => async (dispatch) => {
+  try {
+    const config = { headers: { authorization: localStorage.getItem("token") } };
+    const response = await axios.post(`/api/user/${quizId}/complete`, {}, config);
+    return response.data;
+  } catch (error) {
+    console.error("Erreur completeQuiz:", error.response?.data || error.message);
+  }
+};
 
 
