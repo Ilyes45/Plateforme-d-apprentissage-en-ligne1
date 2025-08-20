@@ -21,6 +21,9 @@ import EditProfile from './Pages/EditProfile/EditProfile';
 import AddQuiz from './Pages/AddQuiz/AddQuiz';
 import Quiz from './Pages/Quiz/Quiz';
 import EditQuiz from './Pages/EditQuiz/EditQuiz';
+import Footer from './Components/Footer/Footer';
+import Contact from './Pages/Contact/Contact';
+import Apropos from './Pages/Apropos/Apropos';
 
 
 function App() {
@@ -54,12 +57,14 @@ useEffect(()=>{
 <Route path="/course/:courseId/lesson/:lessonId/addquiz" element={<AddQuiz />} />
  <Route path="/quiz/:quizId" element={<Quiz />} />
  <Route path="/edit-quiz/:id" element={<EditQuiz />} />
+ <Route path="/contact" element={<Contact />} />
+        <Route path="/apropos" element={<Apropos />} />
  
 
 
   <Route path='/*' element={<Error />} />
 </Routes>
-
+<Footer />
     </div>
   );
 }

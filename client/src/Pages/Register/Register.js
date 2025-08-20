@@ -41,7 +41,7 @@ const handleChange = (e) => {
       return;
     }
     if (result && result.payload && result.payload.message === "User registered successfully") {
-      navigate("/profile");
+      navigate("/cours");
       return;
     }
     if (result && result.payload && result.payload.message) {

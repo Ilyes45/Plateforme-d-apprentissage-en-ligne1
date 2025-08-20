@@ -16,7 +16,7 @@ const Home = () => {
       {/* Hero Section */}
       <div className="hero">
         <div className="hero-text">
-          <h1>Bienvenue sur EduHub</h1>
+          <h1>Bienvenue sur Coursy</h1>
           <p className="slogan">Apprenez. Progressez. Réussissez.</p>
           <div className="hero-buttons">
             <Button

@@ -20,15 +20,22 @@ exports.createCourse = async (req, res) => {
 }
 
 exports.getAllCourses = async (req, res) => {
-    try {
-        const courses = await Course.find();
-         res.status(200).send({ message: 'courses retrieved successfully...', courses });
-    } catch (error) {
-        res.status(500).send({ message: "can't retrieve courses !!!!" });
+  try {
+    let courses;
+    if (req.user) {
+      // utilisateur connecté : seulement les cours assignés
+      courses = await Course.find({ assignedTo: req.user._id });
+    } else {
+      // non connecté : voir tous les cours
+      courses = await Course.find();
     }
-  
- 
+    res.status(200).send({ message: 'Courses retrieved successfully', courses });
+  } catch (error) {
+    res.status(500).send({ message: "Can't retrieve courses" });
+  }
 };
+
+
 
 exports.getOneCourse = async(req,res)=>{
    try {
@@ -76,6 +83,24 @@ exports.editCourse = async (req, res) => {
     res.status(400).send({ msg: "Cannot update course", error });
   }
 };
+
+exports.assignCourseToUser = async (req, res) => {
+  try {
+    const { courseId, userId } = req.body; // admin envoie le cours + user
+    const course = await Course.findById(courseId);
+    if (!course) return res.status(404).json({ msg: "Cours introuvable" });
+
+    if (!course.assignedTo.includes(userId)) {
+      course.assignedTo.push(userId);
+      await course.save();
+    }
+
+    res.status(200).json({ msg: "Cours assigné à l'utilisateur", course });
+  } catch (error) {
+    res.status(500).json({ msg: error.message });
+  }
+};
+
 
 
 

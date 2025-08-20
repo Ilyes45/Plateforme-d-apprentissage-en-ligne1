@@ -4,11 +4,10 @@ const Lesson = require("../models/Lesson");
 
 exports.createLesson = async (req, res) => {
     try {
-  const { title, content, videoUrl, courseId } = req.body;
+  const { title, content, courseId } = req.body;
   const lesson = new Lesson({
     title,
     content,
-    videoUrl,
     courseId,
     createdBy: req.user._id,
   });

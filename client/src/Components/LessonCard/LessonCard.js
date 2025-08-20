@@ -1,11 +1,24 @@
 import React from "react";
 import { Button, Card, Badge } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { deleteLesson, getLessons } from "../../JS/Actions/lesson"; // 👈 importer ton action
 import "./LessonCard.css";
 
 const LessonCard = ({ lesson, course, listLessons, user, isDisabled }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const isCompleted = user?.completedLessons?.includes(lesson._id);
+
+  const handleDelete = () => {
+    if (window.confirm("Voulez-vous vraiment supprimer cette leçon ?")) {
+      dispatch(deleteLesson(lesson._id)) // 👈 suppression
+        .then(() => {
+          // recharge les leçons de ce cours
+          dispatch(getLessons(course._id));
+        });
+    }
+  };
 
   return (
     <Card className="lesson-card">
@@ -18,7 +31,9 @@ const LessonCard = ({ lesson, course, listLessons, user, isDisabled }) => {
           variant={isDisabled ? "secondary" : "primary"}
           onClick={() =>
             !isDisabled &&
-            navigate(`/lesson/${lesson._id}`, { state: { courseId: course._id, lessons: listLessons } })
+            navigate(`/lesson/${lesson._id}`, {
+              state: { courseId: course._id, lessons: listLessons },
+            })
           }
           disabled={isDisabled}
         >
@@ -30,18 +45,22 @@ const LessonCard = ({ lesson, course, listLessons, user, isDisabled }) => {
             <Button
               variant="warning"
               onClick={() =>
-                navigate(`/edit-lesson/${lesson._id}`, { state: { courseId: course._id, lessons: listLessons } })
+                navigate(`/edit-lesson/${lesson._id}`, {
+                  state: { courseId: course._id, lessons: listLessons },
+                })
               }
             >
               Éditer
             </Button>
-            <Button variant="danger" onClick={() => console.log("Supprimer leçon à implémenter")}>
+            <Button variant="danger" onClick={handleDelete}>
               Supprimer
             </Button>
             <Button
               variant="success"
               onClick={() =>
-                navigate(`/course/${course._id}/lesson/${lesson._id}/addquiz`, { state: { lessons: listLessons } })
+                navigate(`/course/${course._id}/lesson/${lesson._id}/addquiz`, {
+                  state: { lessons: listLessons },
+                })
               }
             >
               Ajouter Quiz

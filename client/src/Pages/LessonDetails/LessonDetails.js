@@ -5,7 +5,12 @@ import { getLesson } from "../../JS/Actions/lesson";
 import { getQuizzes, deleteQuiz } from "../../JS/Actions/quiz";
 import { completeLessonAction } from "../../JS/Actions/user";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { Button, Spinner, Alert } from "react-bootstrap";
+
+// Import coloration syntaxique
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 const LessonDetails = () => {
   const { id } = useParams();
@@ -83,13 +88,45 @@ const LessonDetails = () => {
   if (error) return <p>Erreur : {error.message || error}</p>;
   if (!lessonToGet) return <p>Leçon non trouvée.</p>;
 
+  // Nettoyage du Markdown : supprime les puces vides
+  const cleanContent = (lessonToGet.content || "").replace(
+    /^\s*[-*]\s*$/gm,
+    ""
+  );
+
   return (
     <div className="lesson-details-container" key={id}>
       <h1>
-        <ReactMarkdown>{lessonToGet.title}</ReactMarkdown>
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+          {lessonToGet.title}
+        </ReactMarkdown>
       </h1>
+
       <div className="lesson-content">
-        <ReactMarkdown>{lessonToGet.content}</ReactMarkdown>
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          components={{
+            code({ node, inline, className, children, ...props }) {
+              const match = /language-(\w+)/.exec(className || "");
+              return !inline && match ? (
+                <SyntaxHighlighter
+                  style={oneDark}
+                  language={match[1]}
+                  PreTag="div"
+                  {...props}
+                >
+                  {String(children).replace(/\n$/, "")}
+                </SyntaxHighlighter>
+              ) : (
+                <code className={className} {...props}>
+                  {children}
+                </code>
+              );
+            },
+          }}
+        >
+          {cleanContent}
+        </ReactMarkdown>
       </div>
 
       {/* Navigation Précédent / Suivant */}
@@ -187,29 +224,28 @@ const LessonDetails = () => {
                 >
                   {completed ? "Quiz complété" : "Voir Quiz"}
                 </Button>
-               {user?.role === "admin" && (
-  <>
-    <Button
-      variant="warning"
-      className="m-2"
-      onClick={() =>
-        navigate(`/edit-quiz/${quiz._id}`, {
-          state: { courseId, lessons: lessonsList },
-        })
-      }
-    >
-      Éditer
-    </Button>
-    <Button
-      variant="danger"
-      className="m-2"
-      onClick={() => dispatch(deleteQuiz(quiz._id))}
-    >
-      Supprimer
-    </Button>
-  </>
-)}
-
+                {user?.role === "admin" && (
+                  <>
+                    <Button
+                      variant="warning"
+                      className="m-2"
+                      onClick={() =>
+                        navigate(`/edit-quiz/${quiz._id}`, {
+                          state: { courseId, lessons: lessonsList },
+                        })
+                      }
+                    >
+                      Éditer
+                    </Button>
+                    <Button
+                      variant="danger"
+                      className="m-2"
+                      onClick={() => dispatch(deleteQuiz(quiz._id))}
+                    >
+                      Supprimer
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           );
