@@ -1,13 +1,18 @@
-const isAdmin = async (req, res, next) => {
+const isAdmin = (req, res, next) => {
   try {
-    // Check if the user is authenticated
-    if (req.user && req.user.role === 'admin') {
-      next();
-    } else {
-      return res.status(403).json({ msg: 'Access denied: Admins only' });
+    // ⚠️ on suppose que `isauth` est déjà passé avant ce middleware
+    // donc req.user est déjà rempli avec le user trouvé en BDD
+    if (!req.user) {
+      return res.status(401).send({ msg: "Unauthorized: No user found" });
     }
+
+    if (req.user.role !== "admin") {
+      return res.status(403).send({ msg: "Access denied: Admins only!" });
+    }
+
+    next();
   } catch (error) {
-    res.status(500).json({ msg: 'Server error in isAdmin middleware' });
+    res.status(500).send({ msg: "Server error in isAdmin", error });
   }
 };
 

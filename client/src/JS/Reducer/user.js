@@ -1,36 +1,67 @@
-    //1- import 
+import { 
+  CURRENT_USER, 
+  FAIL_USER, 
+  GET_ALL_USERS, 
+  GET_USER, 
+  GET_USER_PROGRESS, 
+  LOAD_USER, 
+  LOGOUT_USER, 
+  SUCC_USER, 
+  UPDATE_USER_PROGRESS, 
+  USER_ERRORS
+} from "../ActionsTypes/user";
 
-    import { CURRENT_USER, FAIL_USER, LOAD_USER, LOGOUT_USER, SUCC_USER } from "../ActionsTypes/user";
+const initialState = {
+  user: null,
+  loadUser: false,
+  errors: [],
+  isAuth: false,
+  allUsers: [],
+  userProgress: {},
+};
 
+const userReducer = (state = initialState, { type, payload }) => {
+  switch (type) {
+    case LOAD_USER:
+      return { ...state, loadUser: true };
 
-    //2 - initstate
-    const initState= {
-        user:null,
-        loadUser: false,
-        errors:[],
-        isAuth: false,
-        
-    };
+    case SUCC_USER:
+      localStorage.setItem("token", payload.token);
+      return { ...state, loadUser: false, user: payload.user, isAuth: true, errors: [] };
 
+    case FAIL_USER:
+      return { ...state, loadUser: false, errors: payload, isAuth: false };
 
-    //3- pure function
+    case CURRENT_USER:
+      return { ...state, loadUser: false, user: payload, isAuth: true, errors: [] };
 
-    const userReducer = (state= initState,{type,payload})=>{
-        switch (type) {
-            case LOAD_USER:
-                return{...state, loadUser: true};
-            case SUCC_USER:
-                localStorage.setItem("token", payload.token);
-                return{...state, loadUser: false, user: payload.user, isAuth: true};
-            case FAIL_USER:
-                return{...state, loadUser: false, errors: payload};
-            case CURRENT_USER:
-                return{...state, loadUser: false, user: payload, isAuth:true};
-            case LOGOUT_USER:
-                localStorage.removeItem("token");
-                return{...state, loadUser: false, errors: [], isAuth:false};
-            default:
-                return state;
-        }
-    }
-    export default userReducer;
+    case GET_ALL_USERS:
+      return { ...state, loadUser: false, allUsers: payload.users || payload };
+
+    case LOGOUT_USER:
+      localStorage.removeItem("token");
+      return { ...state, loadUser: false, user: null, errors: [], isAuth: false };
+
+    case GET_USER:
+      return { ...state, loadUser: false, user: payload, isAuth: true };
+
+    case USER_ERRORS:
+      return { ...state, loadUser: false, errors: [...state.errors, payload] };
+
+   case GET_USER_PROGRESS:
+  return {
+    ...state,
+    userProgress: { 
+      ...state.userProgress, 
+      [payload.id]: payload.progress // stocké par userId
+    },
+  };
+    case UPDATE_USER_PROGRESS:
+      return { ...state, userProgress: payload };
+
+    default:
+      return state;
+  }
+};
+
+export default userReducer;

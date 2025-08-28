@@ -1,23 +1,35 @@
-const express = require('express');
-const isauth = require('../midlleware/isAuth');
-const isAdmin = require('../midlleware/isAdmin');
+const express = require("express");
+const router = express.Router();
+const isauth = require("../midlleware/isAuth");
+const isAdmin = require("../midlleware/isAdmin");
+
 const {
   createQuiz,
   getQuizzes,
   getQuizById,
   updateQuiz,
   deleteQuiz,
-  getQuizByLessonId,
-  
-} = require('../controllers/quiz');
+  getQuizzesByLessonId
+} = require("../controllers/quiz");
 
-const router = express.Router();
+// Créer un quiz
 
-router.post('/addquiz', isauth, isAdmin, createQuiz);
-router.get('/', getQuizzes);     
-router.get('/:id', getQuizById); 
-router.get('/lesson/:lessonId', getQuizByLessonId);
-router.put('/:id', isauth, isAdmin, updateQuiz);
-router.delete('/:id', isauth, isAdmin, deleteQuiz);
+// Créer un quiz pour une leçon
+router.post("/addquiz", isauth, isAdmin, createQuiz);
+
+// Récupérer tous les quiz
+router.get("/", getQuizzes);
+
+// Récupérer quiz par lesson (mettre avant /:id)
+router.get("/lesson/:lessonId", getQuizzesByLessonId);
+
+// Récupérer quiz par ID
+router.get("/:id", getQuizById);
+
+// Modifier un quiz
+router.put("/:id", isauth, isAdmin, updateQuiz);
+
+// Supprimer un quiz
+router.delete("/:id", isauth, isAdmin, deleteQuiz);
 
 module.exports = router;

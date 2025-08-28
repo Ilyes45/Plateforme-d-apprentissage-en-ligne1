@@ -1,0 +1,193 @@
+/* Container */
+.admin-course-list {
+  max-width: 1100px;
+  margin: 24px auto;
+  padding: 16px 20px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  color: #1f2937;
+}
+
+.admin-course-list h2 {
+  margin: 0 0 16px;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.admin-course-list h3 {
+  margin: 24px 0 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+/* Table */
+.admin-course-list table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #fafafa;
+}
+
+.admin-course-list thead th {
+  text-align: left;
+  font-weight: 700;
+  font-size: 0.9rem;
+  background: #f3f4f6;
+  color: #111827;
+  padding: 12px 14px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.admin-course-list tbody td {
+  padding: 12px 14px;
+  vertical-align: top;
+  border-bottom: 1px solid #f1f5f9;
+  background: #ffffff;
+}
+
+.admin-course-list tbody tr:hover td {
+  background: #f9fafb;
+}
+
+/* Lists inside table cells */
+.admin-course-list td ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.admin-course-list td ul li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  border-bottom: 1px dashed #eef2f7;
+}
+
+.admin-course-list td ul li:last-child {
+  border-bottom: none;
+}
+
+/* Buttons */
+.admin-course-list button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: transform 0.08s ease, box-shadow 0.15s ease, background 0.15s ease;
+  white-space: nowrap;
+}
+
+.admin-course-list button:hover {
+  background: #1d4ed8;
+  box-shadow: 0 6px 14px rgba(37, 99, 235, 0.18);
+}
+
+.admin-course-list button:active {
+  transform: translateY(1px);
+}
+
+.admin-course-list .delete-btn {
+  background: #ef4444;
+}
+
+.admin-course-list .delete-btn:hover {
+  background: #dc2626;
+  box-shadow: 0 6px 14px rgba(239, 68, 68, 0.18);
+}
+
+/* Select */
+.admin-course-list select {
+  width: 100%;
+  max-width: 360px;
+  appearance: none;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  color: #111827;
+  font-size: 0.95rem;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+  outline: none;
+}
+
+.admin-course-list select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+}
+
+/* Utility cells */
+.admin-course-list td[colspan] {
+  text-align: center;
+  color: #6b7280;
+  background: #fff;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .admin-course-list {
+    padding: 12px 12px;
+  }
+
+  .admin-course-list table,
+  .admin-course-list thead,
+  .admin-course-list tbody,
+  .admin-course-list th,
+  .admin-course-list td,
+  .admin-course-list tr {
+    display: block;
+  }
+
+  .admin-course-list thead {
+    display: none;
+  }
+
+  .admin-course-list tbody tr {
+    margin-bottom: 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .admin-course-list tbody td {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 8px;
+    border-bottom: 1px solid #f3f4f6;
+  }
+
+  .admin-course-list tbody td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #374151;
+  }
+
+  /* Optional: if you want data-labels, add them in JSX:
+     <td data-label="Titre">{course.title}</td> etc.
+  */
+}
+
+/* Subtle scroll styling (supported browsers) */
+.admin-course-list *::-webkit-scrollbar {
+  height: 10px;
+  width: 10px;
+}
+
+.admin-course-list *::-webkit-scrollbar-thumb {
+  background: #e5e7eb;
+  border-radius: 10px;
+}
+
+.admin-course-list *::-webkit-scrollbar-thumb:hover {
+  background: #d1d5db;
+}

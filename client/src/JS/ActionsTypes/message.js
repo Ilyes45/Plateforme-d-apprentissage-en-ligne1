@@ -1,0 +1,5 @@
+export const LOAD_MESSAGES = "LOAD_MESSAGES";
+export const GET_MESSAGES = "GET_MESSAGES";
+export const FAIL_MESSAGES = "FAIL_MESSAGES";
+export const DELETE_MESSAGE = "DELETE_MESSAGE";
+export const MARK_AS_READ = "MARK_AS_READ";

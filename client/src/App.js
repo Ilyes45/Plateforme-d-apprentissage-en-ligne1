@@ -24,6 +24,9 @@ import EditQuiz from './Pages/EditQuiz/EditQuiz';
 import Footer from './Components/Footer/Footer';
 import Contact from './Pages/Contact/Contact';
 import Apropos from './Pages/Apropos/Apropos';
+import AdminCourseList from './Pages/AdminCourseList/AdminCourseList';
+import AdminUserList from './Pages/AdminUserList/AdminUserList';
+import AdminMessages from './Pages/AdminMessages.js/AdminMessages';
 
 
 function App() {
@@ -59,8 +62,10 @@ useEffect(()=>{
  <Route path="/edit-quiz/:id" element={<EditQuiz />} />
  <Route path="/contact" element={<Contact />} />
         <Route path="/apropos" element={<Apropos />} />
- 
 
+        <Route path="/admin/courses" element={<AdminCourseList/>} />
+        <Route path="/admin/users" element={<AdminUserList/>} />
+        <Route path="/admin/messages" element={<AdminMessages/>} />
 
   <Route path='/*' element={<Error />} />
 </Routes>

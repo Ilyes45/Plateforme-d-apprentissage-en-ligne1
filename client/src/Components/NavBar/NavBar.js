@@ -21,6 +21,9 @@ const NavBar = () => {
       {isAuth && <Nav.Link href="/profile">Profile</Nav.Link>}
       {isAuth && <Nav.Link href="/cours">Cours</Nav.Link>}
       {isAuth && user?.role === "admin" && <Nav.Link href="/add-course">AddCourse</Nav.Link>}
+      {isAuth && user?.role === "admin" && <Nav.Link href="/admin/courses">Admin Course List</Nav.Link>}
+      {isAuth && user?.role === "admin" && <Nav.Link href="/admin/users">Admin User List</Nav.Link>}
+      {isAuth && user?.role === "admin" && <Nav.Link href="/admin/messages">Admin Messages</Nav.Link>}
     </Nav>
 
     {/* Boutons à droite */}

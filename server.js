@@ -24,6 +24,8 @@ app.use("/api/user",require("./routes/user"));
 app.use("/api/course",require("./routes/course"));
 app.use("/api/lesson",require("./routes/lesson"));
 app.use("/api/quiz",require("./routes/quiz"));
+app.use("/api/messages", require("./routes/message"));
+
 
 //3- create port
 const port = process.env.PORT

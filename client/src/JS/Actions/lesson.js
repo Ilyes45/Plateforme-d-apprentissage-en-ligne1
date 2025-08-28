@@ -71,13 +71,15 @@ export const editLesson = (id, newLesson) => async (dispatch) => {
 // get one lesson
 
 export const getLesson = (id) => async (dispatch) => {
-    dispatch({type: LOAD_LESSON});
+    dispatch({ type: LOAD_LESSON });
     try {
-        let result = await axios.get(`/api/lesson/${id}`);
-        dispatch({ type: GET_LESSON , payload: { lessonToGet: result.data.lessonToGet } });
+        const result = await axios.get(`/api/lesson/${id}`);
+        console.log("Lesson reçue :", result.data.lesson); // ✅ debug
+        dispatch({ type: GET_LESSON, payload: { lessonToGet: result.data.lesson } });
     } catch (error) {
         console.error("GET LESSON ERROR", error.response?.data || error.message);
-        dispatch({type : FAIL_LESSON, payload: error.response});
+        dispatch({ type: FAIL_LESSON, payload: error.response });
     }
-}
+};
+
 

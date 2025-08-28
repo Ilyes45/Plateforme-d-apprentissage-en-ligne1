@@ -42,6 +42,10 @@ const userSchema = new mongoose.Schema({
   completedLessons: [{ // Leçons déjà validées
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Lesson'
+  }],
+  completedCourses: [{ // Cours déjà validés
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Course'
   }]
 });
 

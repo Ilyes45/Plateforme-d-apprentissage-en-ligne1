@@ -1,29 +1,22 @@
-const express = require('express');
-const isauth = require('../midlleware/isAuth');
-const isAdmin = require('../midlleware/isAdmin');
-const { getAllLessons, createLesson, getOneLesson, deleteLesson, editLesson } = require('../controllers/lesson');
-
-// cerate router
+const express = require("express");
 const router = express.Router();
+const isauth = require("../midlleware/isAuth");
+const isAdmin = require("../midlleware/isAdmin");
+const { createLesson, getAllLessons, getOneLesson, editLesson, deleteLesson } = require("../controllers/lesson");
 
+// Créer une leçon
+router.post("/addlesson", isauth, isAdmin, createLesson);
 
-// route lesson (create-lesson && get-lessons && get-lesson-by-id) 
+// Récupérer toutes les leçons
+router.get("/getLessons", getAllLessons);
 
-// add lesson
+// Récupérer une leçon par ID
+router.get("/:id", getOneLesson);
 
-router.post("/addlesson",isauth, isAdmin,createLesson );
+// Modifier une leçon
+router.put("/:_id", isauth, isAdmin, editLesson);
 
-//get all lesson
-router.get("/getLessons",getAllLessons);
+// Supprimer une leçon
+router.delete("/:_id", isauth, isAdmin, deleteLesson);
 
-// get one lesson
-router.get("/:id",getOneLesson);
-
-// delete lesson
-router.delete("/:_id",isauth, isAdmin ,deleteLesson);
-
-// edit lesson
-router.put("/:_id",isauth, isAdmin ,editLesson);
-
-//3- export router
 module.exports = router;

@@ -9,11 +9,30 @@ const initialState = {
 
 const quizReducer = (state = initialState, { type, payload }) => {
   switch (type) {
-    case LOAD_QUIZ: return { ...state, load: true };
-    case SUCC_QUIZ: return { ...state, load: false, listQuizzes: payload.listQuizzes };
-    case GET_QUIZ: return { ...state, load: false, quizToGet: payload.quizToGet };
-    case FAIL_QUIZ: return { ...state, load: false, error: payload };
-    default: return state;
+    case LOAD_QUIZ:
+      return { ...state, load: true, error: null };
+
+    case SUCC_QUIZ:
+      return {
+        ...state,
+        load: false,
+        listQuizzes: payload.listQuizzes || [],
+        error: null
+      };
+
+    case GET_QUIZ:
+      return {
+        ...state,
+        load: false,
+        quizToGet: payload.quizToGet,
+        error: null
+      };
+
+    case FAIL_QUIZ:
+      return { ...state, load: false, error: payload };
+
+    default:
+      return state;
   }
 };
 

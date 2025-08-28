@@ -8,7 +8,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Button, Spinner, Alert } from "react-bootstrap";
 
-// Import coloration syntaxique
+// coloration syntaxique
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
@@ -18,26 +18,32 @@ const LessonDetails = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const courseId = location.state?.courseId;
-  const lessonsList = location.state?.lessons || [];
-  const currentIndex = lessonsList.findIndex(
-    (lesson) => String(lesson._id) === String(id)
-  );
+  const { lessonToGet, load, error } = useSelector(state => state.lessonReducer);
+  const { listQuizzes, load: loadQuiz, error: errorQuiz } = useSelector(state => state.quizReducer);
+  const { user } = useSelector(state => state.userReducer);
+  const listCourses = useSelector(state => state.courseReducer.listCourses);
 
-  const { lessonToGet, load, error } = useSelector(
-    (state) => state.lessonReducer
-  );
-  const {
-    listQuizzes,
-    load: loadQuiz,
-    error: errorQuiz,
-  } = useSelector((state) => state.quizReducer);
-  const { user } = useSelector((state) => state.userReducer);
-
+  const [lessonsList, setLessonsList] = useState([]);
   const [canGoNext, setCanGoNext] = useState(false);
 
+  // récupération du cours et des leçons
   useEffect(() => {
-    dispatch(getLesson(id));
+    if (location.state?.lessons) {
+      setLessonsList(location.state.lessons);
+    } else if (listCourses && listCourses.length > 0) {
+      const courseId = location.state?.courseId || lessonToGet?.courseId;
+      const course = listCourses.find(c => c._id === courseId);
+      if (course) setLessonsList(course.lessons || []);
+    }
+  }, [location.state, listCourses, lessonToGet]);
+
+  const currentIndex = lessonsList.findIndex(
+    lesson => String(lesson._id) === String(id)
+  );
+
+  // récupérer la leçon + quiz
+  useEffect(() => {
+    if (id) dispatch(getLesson(id));
     dispatch(getQuizzes(id));
 
     if (user && !user.completedLessons?.includes(id)) {
@@ -45,13 +51,14 @@ const LessonDetails = () => {
     }
   }, [dispatch, id, user]);
 
+  // vérifier si tous les quiz sont complétés
   useEffect(() => {
     if (!user) return;
 
     if (!listQuizzes || listQuizzes.length === 0) {
       setCanGoNext(true);
     } else {
-      const allCompleted = listQuizzes.every((quiz) =>
+      const allCompleted = listQuizzes.every(quiz =>
         user.completedQuizzes?.includes(quiz._id)
       );
       setCanGoNext(allCompleted);
@@ -61,38 +68,28 @@ const LessonDetails = () => {
   const goPrevious = () => {
     if (currentIndex > 0) {
       const prevId = lessonsList[currentIndex - 1]._id;
-      navigate(`/lesson/${prevId}`, {
-        state: { lessons: lessonsList, courseId },
-      });
+      navigate(`/lesson/${prevId}`, { state: { lessons: lessonsList, courseId: lessonToGet?.courseId } });
     }
   };
 
   const goNext = () => {
     if (!canGoNext) {
-      alert(
-        "Vous devez terminer tous les quiz pour accéder à la leçon suivante."
-      );
+      alert("Vous devez terminer tous les quiz pour accéder à la leçon suivante.");
       return;
     }
     if (currentIndex < lessonsList.length - 1) {
       const nextId = lessonsList[currentIndex + 1]._id;
-      navigate(`/lesson/${nextId}`, {
-        state: { lessons: lessonsList, courseId },
-      });
+      navigate(`/lesson/${nextId}`, { state: { lessons: lessonsList, courseId: lessonToGet?.courseId } });
     } else {
-      navigate(`/course/${courseId}/lessons`);
+      navigate(`/course/${lessonToGet?.courseId}/lessons`);
     }
   };
 
-  if (load) return <p>Chargement de la leçon...</p>;
-  if (error) return <p>Erreur : {error.message || error}</p>;
+  if (load) return <Spinner animation="border" variant="primary" />;
+  if (error) return <Alert variant="danger">Erreur : {error.message || "Leçon introuvable"}</Alert>;
   if (!lessonToGet) return <p>Leçon non trouvée.</p>;
 
-  // Nettoyage du Markdown : supprime les puces vides
-  const cleanContent = (lessonToGet.content || "").replace(
-    /^\s*[-*]\s*$/gm,
-    ""
-  );
+  const cleanContent = (lessonToGet.content || "").replace(/^\s*[-*]\s*$/gm, "");
 
   return (
     <div className="lesson-details-container" key={id}>
@@ -129,49 +126,18 @@ const LessonDetails = () => {
         </ReactMarkdown>
       </div>
 
-      {/* Navigation Précédent / Suivant */}
-      <div
-        className="lesson-navigation-btns"
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          flexWrap: "wrap",
-          marginBottom: "30px",
-        }}
-      >
-        <Button
-          variant="secondary"
-          className="m-2"
-          onClick={goPrevious}
-          disabled={currentIndex <= 0}
-        >
+      {/* Navigation */}
+      <div style={{ display: "flex", justifyContent: "center", margin: "20px" }}>
+        <Button variant="secondary" onClick={goPrevious} disabled={currentIndex <= 0}>
           Précédent
         </Button>
-        <Button
-          variant="secondary"
-          className="m-2"
-          onClick={goNext}
-          disabled={currentIndex === lessonsList.length - 1 && !canGoNext}
-        >
+        <Button variant="secondary" onClick={goNext} disabled={currentIndex === lessonsList.length - 1 && !canGoNext}>
           Suivant
         </Button>
       </div>
 
-      {/* Retour aux leçons */}
-      <div
-        className="back-button-btn"
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          flexWrap: "wrap",
-          marginBottom: "40px",
-        }}
-      >
-        <Button
-          variant="primary"
-          className="m-2"
-          onClick={() => navigate(`/course/${courseId}/lessons`)}
-        >
+      <div style={{ display: "flex", justifyContent: "center", marginBottom: "40px" }}>
+        <Button variant="primary" onClick={() => navigate(`/course/${lessonToGet.courseId}/lessons`)}>
           Retour aux leçons
         </Button>
       </div>
@@ -183,57 +149,35 @@ const LessonDetails = () => {
       {loadQuiz ? (
         <Spinner animation="border" />
       ) : errorQuiz ? (
-        <Alert variant="danger">
-          {errorQuiz.message || "Erreur lors du chargement des quiz"}
-        </Alert>
+        <Alert variant="danger">{errorQuiz.message || "Erreur lors du chargement des quiz"}</Alert>
       ) : listQuizzes.length === 0 ? (
         <p>Aucun quiz trouvé</p>
       ) : (
-        listQuizzes.map((quiz) => {
+        listQuizzes.map(quiz => {
           const completed = user?.completedQuizzes?.includes(quiz._id);
           return (
-            <div
-              key={quiz._id}
-              className="quiz-card"
-              style={{ marginBottom: "20px" }}
-            >
-              <h5>
-                {quiz.title} {completed && "✅ Déjà complété"}
-              </h5>
-              <div
-                className="quiz-btn-group"
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  flexWrap: "wrap",
-                }}
-              >
+            <div key={quiz._id} className="quiz-card" style={{ marginBottom: "20px" }}>
+              <h5>{quiz.title || "Quiz"} {completed && "✅ Déjà complété"}</h5>
+              <div style={{ display: "flex", justifyContent: "center", flexWrap: "wrap" }}>
                 <Button
                   variant={completed ? "secondary" : "success"}
                   className="m-2"
                   disabled={completed}
                   onClick={() =>
                     navigate(`/quiz/${quiz._id}`, {
-                      state: {
-                        lessons: lessonsList,
-                        courseId,
-                        currentLessonId: id,
-                      },
+                      state: { lessons: lessonsList, courseId: lessonToGet.courseId, currentLessonId: id },
                     })
                   }
                 >
                   {completed ? "Quiz complété" : "Voir Quiz"}
                 </Button>
+
                 {user?.role === "admin" && (
                   <>
                     <Button
                       variant="warning"
                       className="m-2"
-                      onClick={() =>
-                        navigate(`/edit-quiz/${quiz._id}`, {
-                          state: { courseId, lessons: lessonsList },
-                        })
-                      }
+                      onClick={() => navigate(`/edit-quiz/${quiz._id}`, { state: { lessons: lessonsList, courseId: lessonToGet.courseId } })}
                     >
                       Éditer
                     </Button>

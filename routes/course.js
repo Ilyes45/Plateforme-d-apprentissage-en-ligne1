@@ -1,29 +1,22 @@
-const express = require('express');
-const isauth = require('../midlleware/isAuth');
-const { createCourse, getAllCourses, getOneCourse, deleteCourse, editCourse } = require('../controllers/course');
-const isAdmin = require('../midlleware/isAdmin');
-
-// cerate router
+const express = require("express");
 const router = express.Router();
+const isauth = require("../midlleware/isAuth");
+const isAdmin = require("../midlleware/isAdmin");
+const {
+  createCourse,
+  getAllCourses,
+  assignCourseToUser,
+  unassignCourseFromUser
+} = require("../controllers/course");
 
+// Créer un cours
+router.post("/addcourse", isauth, isAdmin, createCourse);
 
-// route course (create-course && get-courses && get-course-by-id) 
+// Récupérer tous les cours
+router.get("/getCourses", isauth, getAllCourses);
 
-// add course
+// Assigner/Désassigner
+router.post("/assign", isauth, isAdmin, assignCourseToUser);
+router.post("/unassign", isauth, isAdmin, unassignCourseFromUser);
 
-router.post("/addcourse",isauth, isAdmin, createCourse);
-
-//get all course
-router.get("/getCourses",getAllCourses);
-
-// get one course
-router.get("/:id",getOneCourse);
-
-// delete course
-router.delete("/:_id",isauth, isAdmin ,deleteCourse);
-
-// edit course
-router.put("/:_id",isauth, isAdmin ,editCourse);
-
-//3- export router
 module.exports = router;

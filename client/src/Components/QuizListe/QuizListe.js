@@ -8,20 +8,18 @@ import './QuizListe.css';
 const QuizListe = ({ lessonId, lessonsList, courseId }) => {
   const dispatch = useDispatch();
 
-  const listQuizzes = useSelector(state => state.quizReducer.listQuizzes);
-  const load = useSelector(state => state.quizReducer.load);
-  const error = useSelector(state => state.quizReducer.error);
+  const { listQuizzes, load, error } = useSelector(state => state.quizReducer);
 
   useEffect(() => {
     if (lessonId) dispatch(getQuizzes(lessonId));
   }, [dispatch, lessonId]);
 
-  if (load) return <Spinner animation="border" />;
-  if (error) return <Alert variant="danger">{error.message || 'Erreur'}</Alert>;
+  if (load) return <Spinner animation="border" variant="primary" />;
+  if (error) return <Alert variant="danger">{error.message || 'Erreur lors du chargement des quizzes'}</Alert>;
   if (!listQuizzes || listQuizzes.length === 0) return <p>Aucun quiz trouvé</p>;
 
   return (
-    <div>
+    <div className="quiz-list">
       {listQuizzes.map(quiz => (
         <QuizCard
           key={quiz._id}
