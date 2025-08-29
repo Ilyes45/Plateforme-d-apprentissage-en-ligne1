@@ -1,29 +1,43 @@
-import React, { useState } from 'react'
-import { useDispatch } from 'react-redux';
-import { addCourse } from '../../JS/Actions/course';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addCourse, assignCourse } from '../../JS/Actions/course';
 import { Button, Form } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './Addcourse.css';
 
 const Addcourse = () => {
+  const [newCourse, setNewCourse] = useState({});
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const user = useSelector(state => state.userReducer.user);
 
-    const [newCourse, setNewCourse] =useState({});
-    const dispatch = useDispatch();
+  const handleChange = (e) => {
+    setNewCourse({ ...newCourse, [e.target.name]: e.target.value });
+  };
 
-    const handleChange = (e) => {
-        setNewCourse({
-            ...newCourse,
-            [e.target.name]: e.target.value
-        });
+  const add = async (e) => {
+    e.preventDefault();
+    try {
+      // 1️⃣ Ajouter le cours
+      const res = await dispatch(addCourse(newCourse));
+
+      // 2️⃣ Récupérer l'id du cours ajouté
+      const addedCourseId = res?.data?.course?._id;
+      if (addedCourseId && user) {
+        // 3️⃣ Assigner automatiquement le cours au créateur (si non-admin)
+        await dispatch(assignCourse(addedCourseId, user._id));
+      }
+
+      // 4️⃣ Naviguer vers la liste des cours
+      navigate('/cours');
+    } catch (err) {
+      console.error('Erreur ajout cours:', err);
     }
-    const add = (e) => {
-        dispatch(addCourse(newCourse));
-    };
+  };
 
-      return (
-   
-      <div className="add-course-container">
-      <h2>Add Course</h2>
+  return (
+    <div className="add-course-container">
+      <h2>Ajouter un cours</h2>
       <Form>
         <Form.Label>Title</Form.Label>
         <Form.Control
@@ -49,15 +63,12 @@ const Addcourse = () => {
           value={newCourse.category || ''}
           onChange={handleChange}
         />
-        <Link to="/cours">
-          <Button variant="primary" type="submit" onClick={add}>
-            Add
-          </Button>
-        </Link>
+        <Button variant="primary" type="submit" onClick={add} style={{ marginTop: '10px' }}>
+          Ajouter
+        </Button>
       </Form>
-
     </div>
-  )
-}
+  );
+};
 
-export default Addcourse
+export default Addcourse;

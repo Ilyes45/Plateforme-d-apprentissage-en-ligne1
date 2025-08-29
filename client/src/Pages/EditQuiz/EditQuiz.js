@@ -85,30 +85,7 @@ const EditQuiz = () => {
     <div className="edit-quiz-container">
       <h2>Modifier le Quiz</h2>
       <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label>Titre du quiz</label>
-          <input
-            type="text"
-            className="form-control"
-            value={formData.title}
-            onChange={(e) =>
-              setFormData({ ...formData, title: e.target.value })
-            }
-            required
-          />
-        </div>
-
-        <div className="mb-3">
-          <label>Description</label>
-          <textarea
-            className="form-control"
-            value={formData.description}
-            onChange={(e) =>
-              setFormData({ ...formData, description: e.target.value })
-            }
-            rows={3}
-          />
-        </div>
+      
 
         <h4>Questions</h4>
         {formData.questions.map((q, qIndex) => (

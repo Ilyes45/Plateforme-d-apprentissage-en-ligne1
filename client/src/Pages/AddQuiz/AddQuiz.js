@@ -49,7 +49,7 @@ const AddQuiz = () => {
   return (
     <div className="add-quiz-page">
       <div className="add-quiz-container">
-        <h2>Créer un quiz pour la leçon {lessonId}</h2>
+        <h2>Créer un quiz </h2>
         <Form onSubmit={handleSubmit}>
           {questions.map((question, qIndex) => (
             <div key={qIndex} className="question-card">

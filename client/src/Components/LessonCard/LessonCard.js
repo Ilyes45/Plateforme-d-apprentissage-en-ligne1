@@ -2,18 +2,19 @@ import React from "react";
 import { Button, Card, Badge } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { deleteLesson, getLessons } from "../../JS/Actions/lesson"; // actions Redux
+import { deleteLesson, getLessons } from "../../JS/Actions/lesson"; 
 import "./LessonCard.css";
 
 const LessonCard = ({ lesson, course, listLessons, user, isDisabled }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const isCompleted = user?.completedLessons?.includes(lesson._id);
 
-  // Suppression de la leçon avec tous ses quiz et mise à jour des utilisateurs
+  // ✅ Pas de badge pour admin
+  const isCompleted = user?.role !== "admin" && user?.completedLessons?.includes(lesson._id);
+
   const handleDelete = () => {
     if (window.confirm("Voulez-vous vraiment supprimer cette leçon et ses quiz ?")) {
-      dispatch(deleteLesson(lesson._id, course._id)) // envoie courseId pour recharger la liste
+      dispatch(deleteLesson(lesson._id, course._id))
         .then(() => dispatch(getLessons(course._id)));
     }
   };
@@ -26,16 +27,16 @@ const LessonCard = ({ lesson, course, listLessons, user, isDisabled }) => {
         </Card.Title>
 
         <Button
-          variant={isDisabled ? "secondary" : "primary"}
+          variant={isDisabled && user?.role !== "admin" ? "secondary" : "primary"}
           onClick={() =>
-            !isDisabled &&
+            !(isDisabled && user?.role !== "admin") &&
             navigate(`/lesson/${lesson._id}`, {
               state: { courseId: course._id, lessons: listLessons },
             })
           }
-          disabled={isDisabled}
+          disabled={isDisabled && user?.role !== "admin"}
         >
-          {isDisabled ? "Verrouillée" : "Voir Leçon"}
+          {isDisabled && user?.role !== "admin" ? "Verrouillée" : "Voir Leçon"}
         </Button>
 
         {user?.role === "admin" && (

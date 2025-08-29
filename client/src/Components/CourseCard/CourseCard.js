@@ -28,13 +28,17 @@ const CourseCard = ({ course, isDisabled = false, completed, user }) => {
     if (currentUser && currentUser.role === "admin") dispatch(getAllUsers());
   }, [dispatch, currentUser]);
 
-  const isCompleted = completed !== undefined ? completed : 
-    user?.completedLessons &&
-    course?.lessons?.length > 0 &&
-    course.lessons.every((l) => user.completedLessons.includes(l._id));
+  // ✅ Ne calcule pas la complétion si admin
+  const isCompleted = user?.role !== "admin" && (
+    completed !== undefined
+      ? completed
+      : user?.completedLessons &&
+        course?.lessons?.length > 0 &&
+        course.lessons.every((l) => user.completedLessons.includes(l._id))
+  );
 
   const handleViewLessons = () => {
-    if (isDisabled) return; 
+    if (isDisabled && user?.role !== "admin") return; 
     if (user) navigate(`/course/${course._id}/lessons`);
     else {
       alert("Tu dois t'inscrire ou te connecter !");
@@ -62,11 +66,11 @@ const CourseCard = ({ course, isDisabled = false, completed, user }) => {
 
           <div className="d-flex flex-wrap gap-2 mt-3">
             <Button
-              variant={isDisabled ? "secondary" : "primary"}
+              variant={isDisabled && user?.role !== "admin" ? "secondary" : "primary"}
               onClick={handleViewLessons}
-              disabled={isDisabled}
+              disabled={isDisabled && user?.role !== "admin"}
             >
-              {isDisabled ? "Verrouillé 🔒" : "Voir Leçons"}
+              {isDisabled && user?.role !== "admin" ? "Verrouillé 🔒" : "Voir Leçons"}
             </Button>
 
             {canEdit && (

@@ -37,6 +37,18 @@ exports.getAllCourses = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+exports.getCourseById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const course = await Course.findById(id);
+    if (!course) {
+      return res.status(404).json({ message: "Cours introuvable" });
+    }
+    res.status(200).json({ courseToGet: course });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 
 // Assigner un utilisateur
@@ -88,6 +100,49 @@ exports.unassignCourseFromUser = async (req, res) => {
     res.status(200).json({ course: populatedCourse });
   } catch (error) {
     console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+};
+// Modifier un cours
+exports.updateCourse = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, description, category } = req.body;
+
+    const course = await Course.findById(id);
+    if (!course) return res.status(404).json({ message: "Cours introuvable" });
+
+    // Vérification : seul l'admin ou le créateur peut modifier
+    if (req.user.role !== "admin" && course.createdBy.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: "Accès refusé" });
+    }
+
+    course.title = title || course.title;
+    course.description = description || course.description;
+    course.category = category || course.category;
+
+    await course.save();
+    res.status(200).json({ message: "Cours mis à jour", course });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Supprimer un cours
+exports.deleteCourse = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const course = await Course.findById(id);
+    if (!course) return res.status(404).json({ message: "Cours introuvable" });
+
+    // Vérification : seul l'admin ou le créateur peut supprimer
+    if (req.user.role !== "admin" && course.createdBy.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: "Accès refusé" });
+    }
+
+    await Course.findByIdAndDelete(id);
+    res.status(200).json({ message: "Cours supprimé avec succès" });
+  } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
