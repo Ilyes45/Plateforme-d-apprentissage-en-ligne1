@@ -20,25 +20,34 @@ exports.createCourse = async (req, res) => {
   }
 };
 
+
 // ---------------- GET ALL COURSES ----------------
-// Retrieve all courses, admins see all, users see only assigned courses
 exports.getAllCourses = async (req, res) => {
   try {
     let courses;
-    if (req.user.role === "admin") {
+
+    if (!req.user) {
+      // 🚀 Cas visiteur : afficher tous les cours sans restriction
+      courses = await Course.find()
+        .populate("lessons")
+        .populate("createdBy", "name email");
+    } else if (req.user.role === "admin") {
+      // 🚀 Admin : tous les cours
       courses = await Course.find()
         .populate("lessons")
         .populate("createdBy", "name email")
         .populate("assignedTo", "name email");
     } else {
-      // Normal users: only their assigned courses
+      // 🚀 User connecté : seulement ses cours
       courses = await Course.find({ assignedTo: req.user._id })
         .populate("lessons")
         .populate("createdBy", "name email")
         .populate("assignedTo", "name email");
     }
+
     res.status(200).json({ courses });
   } catch (error) {
+    console.error("Error in getAllCourses:", error);
     res.status(500).json({ message: error.message });
   }
 };
