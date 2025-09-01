@@ -1,5 +1,4 @@
-//5- require dotenv
-require("dotenv").config();
+
 
 //1- require express
 const express = require("express");
@@ -8,7 +7,8 @@ const express = require("express");
 
 const app = express();
 
-
+//5- require dotenv
+require("dotenv").config();
 
 //6- connect db 
 const connectDB = require("./config/connectDB");

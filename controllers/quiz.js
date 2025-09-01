@@ -2,12 +2,14 @@ const Lesson = require("../models/Lesson");
 const Course = require("../models/Course");
 const User = require("../models/Users");
 const Quiz=require("../models/Quiz");
-// Créer un nouveau quiz
+
+// ---------------- CREATE QUIZ ----------------
+// Create a new quiz and optionally link it to a lesson
 exports.createQuiz = async (req, res) => {
   try {
     const { title, questions, lessonId } = req.body;
 
-    // Créer le quiz
+    // Create the quiz with title, questions, lesson reference and creator
     const quiz = new Quiz({
       title,
       questions,
@@ -16,18 +18,19 @@ exports.createQuiz = async (req, res) => {
     });
     await quiz.save();
 
-    // Lier le quiz à la leçon
+    // Link quiz to the lesson if lessonId is provided
     if (lessonId) {
       await Lesson.findByIdAndUpdate(lessonId, { quiz: quiz._id });
     }
 
-    res.status(201).json({ message: "Quiz créé et lié à la leçon", quiz });
+    res.status(201).json({ message: "Quiz created and linked to lesson", quiz });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// Récupérer tous les quiz (optionnel par lesson)
+// ---------------- GET ALL QUIZZES ----------------
+// Retrieve all quizzes, optionally filtered by lesson
 exports.getQuizzes = async (req, res) => {
   try {
     const { lessonId } = req.query;
@@ -47,7 +50,8 @@ exports.getQuizzes = async (req, res) => {
   }
 };
 
-// Récupérer un quiz par ID
+// ---------------- GET QUIZ BY ID ----------------
+// Retrieve one quiz by its ID
 exports.getQuizById = async (req, res) => {
   try {
     const quiz = await Quiz.findById(req.params.id);
@@ -58,7 +62,8 @@ exports.getQuizById = async (req, res) => {
   }
 };
 
-// Récupérer un quiz par lessonId
+// ---------------- GET QUIZZES BY LESSON ID ----------------
+// Retrieve quizzes associated with a specific lesson
 exports.getQuizzesByLessonId = async (req, res) => {
   try {
     const lesson = await Lesson.findById(req.params.lessonId).populate("quiz");
@@ -70,29 +75,31 @@ exports.getQuizzesByLessonId = async (req, res) => {
   }
 };
 
-// Modifier un quiz
+// ---------------- UPDATE QUIZ ----------------
+// Update quiz information by ID
 exports.updateQuiz = async (req, res) => {
   try {
     const updatedQuiz = await Quiz.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!updatedQuiz) return res.status(404).json({ message: "Quiz not found" });
-    res.status(200).json({ message: "Quiz mis à jour", quiz: updatedQuiz });
+    res.status(200).json({ message: "Quiz updated", quiz: updatedQuiz });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// Supprimer un quiz
+// ---------------- DELETE QUIZ ----------------
+// Delete a quiz, unlink it from lesson and users
 exports.deleteQuiz = async (req, res) => {
   try {
     const deletedQuiz = await Quiz.findByIdAndDelete(req.params._id);
     if (!deletedQuiz) return res.status(404).json({ message: "Quiz not found" });
 
-    // Retirer le quiz de la leçon
+    // Remove quiz reference from lesson
     if (deletedQuiz.lessonId) {
       await Lesson.findByIdAndUpdate(deletedQuiz.lessonId, { $pull: { quiz: deletedQuiz._id } });
     }
 
-    // Retirer ce quiz de tous les utilisateurs
+    // Remove quiz reference from all users who completed it
     await User.updateMany(
       { completedQuizzes: deletedQuiz._id },
       { $pull: { completedQuizzes: deletedQuiz._id } }

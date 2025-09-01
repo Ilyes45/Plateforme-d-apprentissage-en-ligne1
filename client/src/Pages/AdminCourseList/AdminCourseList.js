@@ -6,23 +6,30 @@ import "./AdminCourseList.css";
 
 const AdminCourseList = () => {
   const dispatch = useDispatch();
+
+  // Récupération des cours et des utilisateurs depuis le store Redux
   const listCourses = useSelector(state => state.courseReducer.listCourses);
   const users = useSelector(state => state.userReducer.allUsers);
 
+  // État local pour stocker l'utilisateur sélectionné pour chaque cours
   const [selectedUsers, setSelectedUsers] = useState({});
 
+  // Au montage, on récupère les cours et tous les utilisateurs
   useEffect(() => {
     dispatch(getCourses());
     dispatch(getAllUsers());
   }, [dispatch]);
 
+  // Assigner un utilisateur à un cours
   const handleAssign = (courseId) => {
     const userId = selectedUsers[courseId];
     if (!userId) return alert("Sélectionnez un utilisateur !");
     dispatch(assignCourse(courseId, userId));
+    // Reset la sélection après assignation
     setSelectedUsers({ ...selectedUsers, [courseId]: "" });
   };
 
+  // Retirer un utilisateur assigné à un cours
   const handleUnassign = (courseId, userId) => {
     if (!userId) return;
     dispatch(unassignCourse(courseId, userId));
@@ -51,13 +58,18 @@ const AdminCourseList = () => {
                 <td>{course.description}</td>
                 <td>{course.category}</td>
                 <td>{course.createdBy?.name || "N/A"}</td>
+
+                {/* Liste des utilisateurs assignés */}
                 <td>
                   {course.assignedTo?.length > 0 ? (
                     <ul>
                       {course.assignedTo.map(u => (
                         <li key={u._id}>
                           {u.name} ({u.email})
-                          <button className="unassign-btn" onClick={() => handleUnassign(course._id, u._id)}>
+                          <button
+                            className="unassign-btn"
+                            onClick={() => handleUnassign(course._id, u._id)}
+                          >
                             Unassign
                           </button>
                         </li>
@@ -67,6 +79,8 @@ const AdminCourseList = () => {
                     <span>Aucun utilisateur assigné</span>
                   )}
                 </td>
+
+                {/* Sélecteur et bouton pour assigner un utilisateur */}
                 <td>
                   <select
                     value={selectedUsers[course._id] || ""}

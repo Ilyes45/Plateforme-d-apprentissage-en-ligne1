@@ -5,12 +5,16 @@ import { getAllUsers } from '../../JS/Actions/user';
 
 const AdminUserList = () => {
   const dispatch = useDispatch();
+  
+  // Récupération des utilisateurs depuis le store Redux
   const users = useSelector((state) => state.userReducer.allUsers);
 
+  // Au chargement du composant, on récupère tous les utilisateurs
   useEffect(() => {
     dispatch(getAllUsers());
   }, [dispatch]);
 
+  // Affichage d'un message si les utilisateurs ne sont pas encore chargés
   if (!users || users.length === 0) {
     return <p>Chargement des utilisateurs...</p>;
   }
@@ -18,7 +22,8 @@ const AdminUserList = () => {
   return (
     <div>
       <h1>Admin User List</h1>
-      {/* On ne passe plus users en props, UserList prend les users directement depuis le store */}
+      {/* Affichage de la liste des utilisateurs
+          Le composant UserList prend directement les users depuis le store */}
       <UserList />
     </div>
   );

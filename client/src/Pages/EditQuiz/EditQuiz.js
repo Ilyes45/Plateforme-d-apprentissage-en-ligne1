@@ -3,13 +3,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import { getQuiz, editQuiz } from "../../JS/Actions/quiz";
 import './EditQuiz.css';
-const EditQuiz = () => {
-  const { id } = useParams();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
 
+const EditQuiz = () => {
+  const { id } = useParams(); // Récupère l'ID du quiz depuis l'URL
+  const dispatch = useDispatch();
+  const navigate = useNavigate(); // Hook pour navigation
+
+  // Récupère le quiz et l'état de chargement depuis Redux
   const { quizToGet, load } = useSelector((state) => state.quizReducer);
 
+  // État local pour le formulaire de modification
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -17,10 +20,12 @@ const EditQuiz = () => {
     questions: [],
   });
 
+  // Charger le quiz depuis le store lors du montage du composant
   useEffect(() => {
     dispatch(getQuiz(id));
   }, [dispatch, id]);
 
+  // Une fois le quiz récupéré, on remplit le formulaire
   useEffect(() => {
     if (quizToGet) {
       setFormData({
@@ -32,18 +37,21 @@ const EditQuiz = () => {
     }
   }, [quizToGet]);
 
+  // Gérer la modification d'une question (texte ou réponse correcte)
   const handleQuestionChange = (qIndex, field, value) => {
     const updatedQuestions = [...formData.questions];
     updatedQuestions[qIndex][field] = value;
     setFormData({ ...formData, questions: updatedQuestions });
   };
 
+  // Gérer la modification d'une option
   const handleOptionChange = (qIndex, optIndex, value) => {
     const updatedQuestions = [...formData.questions];
     updatedQuestions[qIndex].options[optIndex] = value;
     setFormData({ ...formData, questions: updatedQuestions });
   };
 
+  // Ajouter une nouvelle question
   const addQuestion = () => {
     setFormData({
       ...formData,
@@ -54,30 +62,35 @@ const EditQuiz = () => {
     });
   };
 
+  // Supprimer une question
   const removeQuestion = (qIndex) => {
     const updatedQuestions = [...formData.questions];
     updatedQuestions.splice(qIndex, 1);
     setFormData({ ...formData, questions: updatedQuestions });
   };
 
+  // Ajouter une option à une question
   const addOption = (qIndex) => {
     const updatedQuestions = [...formData.questions];
     updatedQuestions[qIndex].options.push("");
     setFormData({ ...formData, questions: updatedQuestions });
   };
 
+  // Supprimer une option
   const removeOption = (qIndex, optIndex) => {
     const updatedQuestions = [...formData.questions];
     updatedQuestions[qIndex].options.splice(optIndex, 1);
     setFormData({ ...formData, questions: updatedQuestions });
   };
 
+  // Envoi du formulaire : modification du quiz
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(editQuiz(id, formData));
-    navigate(-1);
+    dispatch(editQuiz(id, formData)); // Appel action Redux
+    navigate(-1); // Retour à la page précédente
   };
 
+  // Affichage pendant le chargement
   if (load) return <p>Chargement du quiz...</p>;
   if (!quizToGet) return <p>Quiz introuvable</p>;
 
@@ -85,11 +98,12 @@ const EditQuiz = () => {
     <div className="edit-quiz-container">
       <h2>Modifier le Quiz</h2>
       <form onSubmit={handleSubmit}>
-      
 
         <h4>Questions</h4>
         {formData.questions.map((q, qIndex) => (
           <div key={qIndex} className="border p-3 mb-3 question-card">
+
+            {/* Texte de la question */}
             <div className="mb-2">
               <label>Question</label>
               <input
@@ -102,6 +116,7 @@ const EditQuiz = () => {
               />
             </div>
 
+            {/* Options */}
             <div className="mb-2">
               <label>Options</label>
               {q.options.map((opt, optIndex) => (
@@ -132,6 +147,7 @@ const EditQuiz = () => {
               </button>
             </div>
 
+            {/* Réponse correcte */}
             <div className="mb-2">
               <label>Réponse correcte</label>
               <select
@@ -150,6 +166,7 @@ const EditQuiz = () => {
               </select>
             </div>
 
+            {/* Bouton pour supprimer la question */}
             <button
               type="button"
               className="btn btn-danger mt-2"
@@ -160,6 +177,7 @@ const EditQuiz = () => {
           </div>
         ))}
 
+        {/* Ajouter une nouvelle question */}
         <button
           type="button"
           className="btn btn-secondary mb-3"
@@ -168,7 +186,7 @@ const EditQuiz = () => {
           ➕ Ajouter une question
         </button>
 
-        {/* Boutons Enregistrer et Annuler séparés */}
+        {/* Boutons Enregistrer et Annuler */}
         <div className="buttons-group">
           <button type="submit" className="btn btn-primary">
             Enregistrer

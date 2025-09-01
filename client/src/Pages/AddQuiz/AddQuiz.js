@@ -6,43 +6,50 @@ import { createQuiz } from "../../JS/Actions/quiz";
 import "./AddQuiz.css";
 
 const AddQuiz = () => {
-  const { courseId, lessonId } = useParams();
+  const { courseId, lessonId } = useParams(); // récupère les IDs du cours et de la leçon
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  // État local pour gérer les questions du quiz
   const [questions, setQuestions] = useState([
-    { questionText: "", options: ["", "", ""], correctAnswer: "" }
+    { questionText: "", options: ["", "", ""], correctAnswer: "" } // on commence avec une question par défaut
   ]);
 
+  // Mise à jour du texte de la question
   const handleQuestionChange = (index, value) => {
     const updated = [...questions];
     updated[index].questionText = value;
     setQuestions(updated);
   };
 
+  // Mise à jour des options d'une question
   const handleOptionChange = (qIndex, optionIndex, value) => {
     const updated = [...questions];
     updated[qIndex].options[optionIndex] = value;
     setQuestions(updated);
   };
 
+  // Définir la réponse correcte pour une question
   const handleCorrectAnswerChange = (qIndex, value) => {
     const updated = [...questions];
     updated[qIndex].correctAnswer = value;
     setQuestions(updated);
   };
 
+  // Ajouter une nouvelle question
   const addQuestion = () => {
     setQuestions([...questions, { questionText: "", options: ["", "", ""], correctAnswer: "" }]);
   };
 
+  // Supprimer une question existante
   const removeQuestion = (index) => {
     setQuestions(questions.filter((_, i) => i !== index));
   };
 
+  // Soumission du formulaire pour créer le quiz
   const handleSubmit = (e) => {
     e.preventDefault();
-    const quizData = { lessonId, questions };
+    const quizData = { lessonId, questions }; // on prépare les données pour l'action Redux
     dispatch(createQuiz(quizData)).then(() => navigate(`/course/${courseId}/lessons`));
   };
 
@@ -51,6 +58,7 @@ const AddQuiz = () => {
       <div className="add-quiz-container">
         <h2>Créer un quiz </h2>
         <Form onSubmit={handleSubmit}>
+          {/* Parcours de toutes les questions */}
           {questions.map((question, qIndex) => (
             <div key={qIndex} className="question-card">
               <Form.Group className="mb-5">
@@ -65,6 +73,7 @@ const AddQuiz = () => {
                 />
               </Form.Group>
 
+              {/* Parcours des options de la question */}
               {question.options.map((opt, oIndex) => (
                 <Form.Group as={Row} className="mb-4 option-group" key={oIndex}>
                   <Form.Label column sm="1" className="option-label">
@@ -83,7 +92,7 @@ const AddQuiz = () => {
                   <Col sm="3" className="d-flex align-items-center">
                     <Form.Check
                       type="radio"
-                      name={`correctAnswer-${qIndex}`}
+                      name={`correctAnswer-${qIndex}`} // radio group par question
                       label="Réponse correcte"
                       checked={question.correctAnswer === opt}
                       onChange={() => handleCorrectAnswerChange(qIndex, opt)}
@@ -94,6 +103,7 @@ const AddQuiz = () => {
                 </Form.Group>
               ))}
 
+              {/* Bouton pour supprimer la question */}
               {questions.length > 1 && (
                 <Button variant="danger" size="sm" onClick={() => removeQuestion(qIndex)} className="mb-4">
                   Supprimer la question
@@ -102,6 +112,7 @@ const AddQuiz = () => {
             </div>
           ))}
 
+          {/* Boutons pour ajouter une question, soumettre ou annuler */}
           <div className="buttons-group">
             <Button variant="secondary" onClick={addQuestion}>
               Ajouter une question

@@ -1,51 +1,49 @@
 const User = require("../models/Users");
 const Course = require("../models/Course");
 const Quiz = require("../models/Quiz");
-// require bcrypt
+// require bcrypt for password hashing
 const bcrypt = require('bcrypt');
-//require jsonwebtoken 
+// require jsonwebtoken for authentication tokens
 const jwt = require('jsonwebtoken');
-// require cloudinary 
+// require cloudinary for image upload
 const cloudinary = require("../utils/cloudinary");
 
+// ---------------- REGISTER USER ----------------
 exports.register = async(req, res) => {
     try {
-   
-        //req.body
-       
-       
-        const {name, email, password,phone} = req.body;
-       // Vérifie si l'email existe déjà
+        // extract request body
+        const {name, email, password, phone} = req.body;
+
+        // check if email already exists
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ message: 'Email already exists' });
         }
-// Upload image sur Cloudinary si fichier présent
-    let cloudinaryResult = null;
-    if (req.file) {
-      cloudinaryResult = await cloudinary.uploader.upload(req.file.path);
-    }
 
+        // upload profile image to cloudinary if file is provided
+        let cloudinaryResult = null;
+        if (req.file) {
+            cloudinaryResult = await cloudinary.uploader.upload(req.file.path);
+        }
 
+        // hash password
         const salRounds = 10;
-        const hashPassword = await bcrypt.hash(password,salRounds);
+        const hashPassword = await bcrypt.hash(password, salRounds);
 
-        
-
-         //create new user
+        // create new user document
         const newUser = new User({
             name,
             email,
             password: hashPassword,
             phone,
-           image: cloudinaryResult ? cloudinaryResult.secure_url : undefined,
-      cloudinary_id: cloudinaryResult ? cloudinaryResult.public_id : undefined,
+            image: cloudinaryResult ? cloudinaryResult.secure_url : undefined,
+            cloudinary_id: cloudinaryResult ? cloudinaryResult.public_id : undefined,
         });
-        
-         //save user
+
+        // save new user
         await newUser.save();
 
-        //creation token
+        // create JWT token
         const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
         res.status(201).send({ message: 'User registered successfully', user:newUser , token });
@@ -53,16 +51,21 @@ exports.register = async(req, res) => {
         res.status(500).send({ message:"can 't register user"})
     }
 }
+
+// ---------------- LOGIN USER ----------------
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
+
+    // check if user exists
     const user = await User.findOne({ email });
     if (!user) return res.status(400).send({ message: 'Invalid email or password' });
 
+    // compare password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).send({ message: 'Invalid email or password' });
 
-    // 🔹 Calcul automatique des cours complets
+    // check completed courses automatically
     const assignedCourses = await Course.find({ assignedTo: user._id }).populate("lessons");
     for (const course of assignedCourses) {
       const allLessonsDone = course.lessons.every(l =>
@@ -74,6 +77,7 @@ exports.login = async (req, res) => {
     }
     await user.save();
 
+    // create JWT token
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
     res.status(200).send({ message: 'User logged in successfully', user, token });
@@ -82,27 +86,26 @@ exports.login = async (req, res) => {
   }
 };
 
-   
+// ---------------- UPDATE USER ----------------
 exports.updateUser = async (req, res) => {
     try {
-        // Vérifier que l'utilisateur connecté modifie bien son propre profil
+        // check if logged user updates his own profile
         if (req.user._id.toString() !== req.params.id) {
-   return res.status(403).json({ message: "You are not authorized to update this user." });
-}
+            return res.status(403).json({ message: "You are not authorized to update this user." });
+        }
 
-
-        const { id } = req.params; // id de l'utilisateur à modifier
+        const { id } = req.params; // user id to update
         const { name, email, phone, password } = req.body;
 
-        // Chercher l'utilisateur
+        // find user
         const user = await User.findById(id);
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
 
-        // Upload image si nouvelle image fournie
+        // upload new image if provided
         if (req.file) {
-            // supprimer ancienne image si elle existe
+            // delete old image if exists
             if (user.cloudinary_id) {
                 await cloudinary.uploader.destroy(user.cloudinary_id);
             }
@@ -111,18 +114,18 @@ exports.updateUser = async (req, res) => {
             user.cloudinary_id = cloudinaryResult.public_id;
         }
 
-        // Mise à jour des champs
+        // update fields
         if (name) user.name = name;
         if (email) user.email = email;
         if (phone) user.phone = phone;
 
-        // Si mot de passe fourni, le hacher
+        // hash password if provided
         if (password && password.trim() !== "") {
             const saltRounds = 10;
             user.password = await bcrypt.hash(password, saltRounds);
         }
 
-        // Sauvegarde
+        // save changes
         await user.save();
 
         res.status(200).json({ message: "User updated successfully", user });
@@ -132,9 +135,11 @@ exports.updateUser = async (req, res) => {
     }
 };
 
+// ---------------- GET SINGLE USER ----------------
 exports.getUser = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id).select('-password'); // ne pas renvoyer le mdp
+    // do not send password field
+    const user = await User.findById(req.params.id).select('-password'); 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -144,9 +149,7 @@ exports.getUser = async (req, res) => {
   }
 };
 
-
-// Marquer un quiz comme complété
-// Marquer un quiz comme complété
+// ---------------- MARK QUIZ COMPLETED ----------------
 exports.markQuizCompleted = async (req, res) => {
   try {
     const userId = req.user._id;
@@ -155,16 +158,18 @@ exports.markQuizCompleted = async (req, res) => {
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ message: "Utilisateur introuvable" });
 
+    // check if quiz already completed
     if (user.completedQuizzes.includes(quizId)) {
       return res.status(400).json({ message: "Quiz déjà complété" });
     }
 
+    // add quiz to completed list
     user.completedQuizzes.push(quizId);
 
-    // 🔹 Vérifier si les cours sont complétés
+    // check if assigned courses are completed
     const assignedCourses = await Course.find({ assignedTo: user._id }).populate({
       path: 'lessons',
-      populate: { path: 'quiz' } // on populate les quiz dans les leçons
+      populate: { path: 'quiz' } 
     });
 
     for (const course of assignedCourses) {
@@ -197,10 +202,7 @@ exports.markQuizCompleted = async (req, res) => {
   }
 };
 
-
-// Marquer un quiz comme complété
-// Marquer une leçon comme complétée
-// Marquer une leçon comme complétée
+// ---------------- MARK LESSON COMPLETED ----------------
 exports.completeLesson = async (req, res) => {
   try {
     const userId = req.user._id;
@@ -209,13 +211,15 @@ exports.completeLesson = async (req, res) => {
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ message: "Utilisateur introuvable" });
 
+    // check if lesson already completed
     if (user.completedLessons.includes(lessonId)) {
       return res.status(400).json({ message: "Lesson déjà complétée" });
     }
 
+    // add lesson to completed list
     user.completedLessons.push(lessonId);
 
-    // 🔹 Vérifier si les cours sont complétés
+    // check if assigned courses are completed
     const assignedCourses = await Course.find({ assignedTo: user._id }).populate("lessons");
     for (const course of assignedCourses) {
       const allLessonsDone = course.lessons.every(l =>
@@ -238,19 +242,18 @@ exports.completeLesson = async (req, res) => {
   }
 };
 
-
-
+// ---------------- GET ALL USERS (WITHOUT ADMINS) ----------------
 exports.getAllUsers = async (req, res) => {
   try {
-    // Récupère tous les utilisateurs sauf les admins
+    // get all users except admins
     const users = await User.find({ role: { $ne: "admin" } }).select("-password");
 
+    // calculate progress for each user
     const usersWithProgress = await Promise.all(
       users.map(async (user) => {
-        // Cours assignés à l'utilisateur
         const assignedCourses = await Course.find({ assignedTo: user._id }).populate({
           path: "lessons",
-          populate: { path: "quiz" } // populate les quizzes
+          populate: { path: "quiz" } 
         });
 
         let completedCourses = 0;
@@ -274,7 +277,7 @@ exports.getAllUsers = async (req, res) => {
           totalQuizzes += quizzesInCourse.length;
           completedQuizzes += quizzesInCourse.filter(qId => user.completedQuizzes.includes(qId.toString())).length;
 
-          // Cours complété si toutes les leçons ET tous les quizzes complétés
+          // mark course completed if all lessons and quizzes done
           const allLessonsDone = lessons.every(l => user.completedLessons.includes(l._id.toString()));
           const allQuizzesDone = quizzesInCourse.every(qId => user.completedQuizzes.includes(qId.toString()));
 
@@ -298,25 +301,22 @@ exports.getAllUsers = async (req, res) => {
   }
 };
 
-
-
-
-// delete user (admin or self)
+// ---------------- DELETE USER ----------------
 exports.deleteUser = async (req, res) => {
   try {
-    const userIdToDelete = req.params._id; // id du user à supprimer
-    const currentUser = req.user; // utilisateur connecté
+    const userIdToDelete = req.params._id; // user id to delete
+    const currentUser = req.user; // logged-in user
 
     if (!currentUser) {
       return res.status(401).json({ message: "Unauthorized" });
     }
 
-    // Vérifie si l'utilisateur est admin ou supprime son propre compte
-    if (currentUser._id.toString() !== userIdToDelete && !currentUser.isAdmin) {
+    // only admin or same user can delete
+    if (currentUser._id.toString() !== userIdToDelete && currentUser.role !== "admin") {
       return res.status(403).json({ message: "Not authorized to delete this user" });
     }
 
-    // Supprime l'utilisateur
+    // delete user
     const deletedUser = await User.findByIdAndDelete(userIdToDelete);
 
     if (!deletedUser) {
@@ -329,6 +329,8 @@ exports.deleteUser = async (req, res) => {
     res.status(500).json({ message: "Cannot delete user" });
   }
 };
+
+// ---------------- GET USER PROGRESS ----------------
 exports.getUserProgress = async (req, res) => {
   try {
     const userId = req.params.userId || req.params.id;
@@ -336,18 +338,20 @@ exports.getUserProgress = async (req, res) => {
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ message: "Utilisateur introuvable" });
 
+    // find assigned courses
     const assignedCourses = await Course.find({ assignedTo: userId }).populate("lessons");
 
     let totalLessons = 0, completedLessons = 0;
     let totalQuizzes = 0, completedQuizzes = 0;
 
+    // count lessons
     assignedCourses.forEach(course => {
       const lessons = course.lessons || [];
       totalLessons += lessons.length;
       completedLessons += lessons.filter(l => user.completedLessons.includes(l._id.toString())).length;
     });
 
-    // Récupérer tous les quizzes liés aux leçons
+    // count quizzes
     const lessonIds = assignedCourses.flatMap(c => c.lessons.map(l => l._id));
     const quizzes = await Quiz.find({ lessonId: { $in: lessonIds } });
     totalQuizzes = quizzes.length;

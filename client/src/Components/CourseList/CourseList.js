@@ -8,13 +8,17 @@ import "./CourseListe.css";
 
 const CourseList = () => {
   const dispatch = useDispatch();
+
+  // 🔹 Récupération des données depuis le store Redux
   const { listCourses, load } = useSelector((state) => state.courseReducer);
   const user = useSelector((state) => state.userReducer.user);
   const userProgressStore = useSelector((state) => state.userReducer.userProgress);
 
+  // 🔹 Etats pour filtrage et recherche
   const [selectedCategory, setSelectedCategory] = useState("Toutes");
   const [searchTerm, setSearchTerm] = useState("");
 
+  // 🔹 Chargement des cours et de la progression utilisateur
   useEffect(() => {
     dispatch(getCourses());
     if (user?._id && user.role !== "admin") {
@@ -22,11 +26,12 @@ const CourseList = () => {
     }
   }, [dispatch, user?._id, user?.role]);
 
+  // 🔹 Gestion des états de chargement et d'absence de cours
   if (load) return <Spinner animation="border" variant="primary" />;
   if (!Array.isArray(listCourses) || listCourses.length === 0)
     return <h2>Aucun cours trouvé</h2>;
 
-  // 🔹 Filtrer selon le rôle
+  // 🔹 Filtrage des cours selon le rôle (admin voit tout)
   const visibleCourses = user
     ? user.role === "admin"
       ? listCourses
@@ -35,7 +40,7 @@ const CourseList = () => {
         )
     : listCourses;
 
-  // 🔹 Progression sécurisée
+  // 🔹 Sécurisation des données de progression
   const progressData = userProgressStore[user?._id] || {};
   const progress = {
     courses: progressData.courses || { completed: 0, total: 0 },
@@ -45,7 +50,7 @@ const CourseList = () => {
 
   const percent = (done, total) => (total > 0 ? Math.round((done / total) * 100) : 0);
 
-  // 🔹 Catégories
+  // 🔹 Regroupement des cours par catégorie
   const coursesByCategory = visibleCourses.reduce((acc, course) => {
     const category = course.category || "Autres";
     if (!acc[category]) acc[category] = [];
@@ -53,6 +58,7 @@ const CourseList = () => {
     return acc;
   }, {});
 
+  // 🔹 Filtrage par recherche
   const filteredCoursesByCategory = Object.keys(coursesByCategory).reduce(
     (acc, category) => {
       const filteredCourses = coursesByCategory[category].filter((course) => {
@@ -72,10 +78,12 @@ const CourseList = () => {
 
   return (
     <div className="course-page">
+      {/* 🔹 Sidebar : progression et recherche */}
       <aside className="sidebar">
         {user && user.role !== "admin" && (
           <div className="sidebar-progress" style={{ marginBottom: "20px" }}>
             <h4>Progression globale</h4>
+            {/* 🔹 Progression globale combinée */}
             <ProgressBar
               now={percent(
                 progress.courses.completed + progress.lessons.completed + progress.quizzes.completed,
@@ -88,6 +96,7 @@ const CourseList = () => {
               )}%`}
               style={{ marginBottom: "10px" }}
             />
+            {/* 🔹 Progression par type */}
             <ProgressBar
               now={percent(progress.courses.completed, progress.courses.total)}
               label={`Cours ${progress.courses.completed}/${progress.courses.total}`}
@@ -107,6 +116,7 @@ const CourseList = () => {
           </div>
         )}
 
+        {/* 🔹 Barre de recherche */}
         <div className="search-bar">
           <input
             type="text"
@@ -116,6 +126,7 @@ const CourseList = () => {
           />
         </div>
 
+        {/* 🔹 Catégories */}
         <h3>Catégories</h3>
         <ul>
           {categories.map((cat, idx) => (
@@ -130,6 +141,7 @@ const CourseList = () => {
         </ul>
       </aside>
 
+      {/* 🔹 Contenu principal : liste des cours */}
       <main className="course-list-container">
         {!hasResults ? (
           <h2>Aucun cours ne correspond à votre recherche</h2>

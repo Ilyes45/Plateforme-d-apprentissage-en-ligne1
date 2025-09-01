@@ -4,22 +4,23 @@ import { FaFacebook, FaInstagram, FaTwitter, FaLinkedin } from "react-icons/fa";
 import "./Footer.css";
 
 const Footer = () => {
-  // Fonction pour faire défiler vers le haut
+  // 🔹 Fonction pour remonter en haut de la page avec animation fluide
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
   return (
     <footer className="footer">
       <div className="footer-content">
-        {/* Logo et description */}
+        {/* 🔹 Logo et description de la plateforme */}
         <div className="footer-section">
           <h2 className="footer-logo">Coursy</h2>
           <p>Plateforme d'apprentissage en ligne pour développer vos compétences.</p>
         </div>
 
-        {/* Liens utiles */}
+        {/* 🔹 Liens utiles de navigation */}
         <div className="footer-section">
           <h3>Navigation</h3>
           <ul>
+            {/* 🔹 Chaque lien déclenche scroll vers le haut */}
             <li><Link to="/" onClick={scrollToTop}>Accueil</Link></li>
             <li><Link to="/cours" onClick={scrollToTop}>Cours</Link></li>
             <li><Link to="/contact" onClick={scrollToTop}>Contact</Link></li>
@@ -27,7 +28,7 @@ const Footer = () => {
           </ul>
         </div>
 
-        {/* Réseaux sociaux */}
+        {/* 🔹 Icônes et liens vers les réseaux sociaux */}
         <div className="footer-section">
           <h3>Suivez-nous</h3>
           <div className="social-icons">
@@ -39,7 +40,7 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* Copyright */}
+      {/* 🔹 Bas de page : copyright */}
       <div className="footer-bottom">
         <p>© 2025 SkillHub. Tous droits réservés.</p>
       </div>

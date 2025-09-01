@@ -8,6 +8,7 @@ import './CourseCard.css';
 import { SiCplusplus, SiPython, SiJavascript, SiHtml5, SiCss3, SiReact } from "react-icons/si";
 import { FaJava, FaServer } from "react-icons/fa";
 
+// 🔹 Mapping des icônes selon le titre du cours
 const iconMap = {
   "C++": <SiCplusplus size={50} color="#00599C" />,
   "Python": <SiPython size={50} color="#306998" />,
@@ -22,13 +23,16 @@ const iconMap = {
 const CourseCard = ({ course, isDisabled = false, completed, user }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  // 🔹 Récupération de l'utilisateur courant depuis le store
   const currentUser = useSelector(state => state.userReducer.user);
 
+  // 🔹 Si l'utilisateur est admin, on récupère tous les utilisateurs
   useEffect(() => {
     if (currentUser && currentUser.role === "admin") dispatch(getAllUsers());
   }, [dispatch, currentUser]);
 
-  // ✅ Ne calcule pas la complétion si admin
+  // 🔹 Détermine si le cours est complété pour les utilisateurs non-admin
   const isCompleted = user?.role !== "admin" && (
     completed !== undefined
       ? completed
@@ -37,8 +41,9 @@ const CourseCard = ({ course, isDisabled = false, completed, user }) => {
         course.lessons.every((l) => user.completedLessons.includes(l._id))
   );
 
+  // 🔹 Gestion de la navigation vers les leçons
   const handleViewLessons = () => {
-    if (isDisabled && user?.role !== "admin") return; 
+    if (isDisabled && user?.role !== "admin") return; // bloque si cours verrouillé
     if (user) navigate(`/course/${course._id}/lessons`);
     else {
       alert("Tu dois t'inscrire ou te connecter !");
@@ -46,12 +51,14 @@ const CourseCard = ({ course, isDisabled = false, completed, user }) => {
     }
   };
 
+  // 🔹 Vérifie si l'utilisateur peut éditer le cours
   const canEdit = user && (user._id === course.createdBy._id || user.role === "admin");
 
   return (
     <div className="course-card-container">
       <Card className="h-100 position-relative">
         <Card.Body>
+          {/* 🔹 Titre du cours avec icône + badge de complétion */}
           <Card.Title className="course-icon d-flex justify-content-between align-items-center">
             {iconMap[course.title] || course.title}
             {isCompleted && (
@@ -61,18 +68,21 @@ const CourseCard = ({ course, isDisabled = false, completed, user }) => {
             )}
           </Card.Title>
 
+          {/* 🔹 Description et catégorie */}
           <Card.Text>{course.description}</Card.Text>
           <Card.Text>{course.category}</Card.Text>
 
+          {/* 🔹 Boutons d'action */}
           <div className="d-flex flex-wrap gap-2 mt-3">
             <Button
               variant={isDisabled && user?.role !== "admin" ? "secondary" : "primary"}
               onClick={handleViewLessons}
               disabled={isDisabled && user?.role !== "admin"}
             >
-              {isDisabled && user?.role !== "admin" ? "Verrouillé 🔒" : "Voir Leçons"}
+              {isDisabled && user?.role !== "admin" ? "Verrouillé 🔒" : "View Lessons"}
             </Button>
 
+            {/* 🔹 Boutons admin / créateur */}
             {canEdit && (
               <>
                 <Button

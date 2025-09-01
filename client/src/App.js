@@ -1,4 +1,3 @@
-
 import { Route, Routes } from 'react-router-dom';
 import './App.css';
 import NavBar from './Components/NavBar/NavBar';
@@ -28,48 +27,57 @@ import AdminCourseList from './Pages/AdminCourseList/AdminCourseList';
 import AdminUserList from './Pages/AdminUserList/AdminUserList';
 import AdminMessages from './Pages/AdminMessages.js/AdminMessages';
 
-
 function App() {
-  const dispatch=useDispatch();
-useEffect(()=>{
-  if(localStorage.getItem('token')){
-    dispatch(current())
-      }
-  },[dispatch]);
+  const dispatch = useDispatch();
+
+  // 🔹 useEffect pour récupérer l'utilisateur courant si token présent dans localStorage
+  useEffect(() => {
+    if (localStorage.getItem('token')) {
+      dispatch(current()); // action Redux pour récupérer les infos du user
+    }
+  }, [dispatch]);
 
   return (
     <div className="App">
-      <NavBar />
-      
+      <NavBar /> {/* barre de navigation */}
+
       <Routes>
-  <Route path='/' element={<Home />} />
-  <Route path='/register' element={<Register />} />
-  <Route path='/login' element={<Login />} />
-  <Route path='/profile' element={<Profile />} />
-  <Route path="/edit-profile/:id" element={<EditProfile />} />
+        {/* Routes publiques */}
+        <Route path='/' element={<Home />} />
+        <Route path='/register' element={<Register />} />
+        <Route path='/login' element={<Login />} />
+        <Route path='/profile' element={<Profile />} />
+        <Route path="/edit-profile/:id" element={<EditProfile />} />
 
-  <Route path='/cours' element={<Cours />} />
-  <Route path='/add-course' element={<Addcourse />} />
-  <Route path='/edit/:id' element={<EditCourse />} />
+        {/* Routes cours et leçons */}
+        <Route path='/cours' element={<Cours />} />
+        <Route path='/add-course' element={<Addcourse />} />
+        <Route path='/edit/:id' element={<EditCourse />} />
 
-  <Route path="/course/:courseId/lessons" element={<LessonList />} />
-<Route path="/add-lesson/:courseId" element={<AddLesson />} />
-<Route path="/edit-lesson/:lessonId" element={<EditLesson />} />
-<Route path="/lesson/:id" element={<LessonDetails />} />
+        <Route path="/course/:courseId/lessons" element={<LessonList />} />
+        <Route path="/add-lesson/:courseId" element={<AddLesson />} />
+        <Route path="/edit-lesson/:lessonId" element={<EditLesson />} />
+        <Route path="/lesson/:id" element={<LessonDetails />} />
 
-<Route path="/course/:courseId/lesson/:lessonId/addquiz" element={<AddQuiz />} />
- <Route path="/quiz/:quizId" element={<Quiz />} />
- <Route path="/edit-quiz/:id" element={<EditQuiz />} />
- <Route path="/contact" element={<Contact />} />
+        {/* Routes quiz */}
+        <Route path="/course/:courseId/lesson/:lessonId/addquiz" element={<AddQuiz />} />
+        <Route path="/quiz/:quizId" element={<Quiz />} />
+        <Route path="/edit-quiz/:id" element={<EditQuiz />} />
+
+        {/* Pages statiques */}
+        <Route path="/contact" element={<Contact />} />
         <Route path="/apropos" element={<Apropos />} />
 
-        <Route path="/admin/courses" element={<AdminCourseList/>} />
-        <Route path="/admin/users" element={<AdminUserList/>} />
-        <Route path="/admin/messages" element={<AdminMessages/>} />
+        {/* Pages admin */}
+        <Route path="/admin/courses" element={<AdminCourseList />} />
+        <Route path="/admin/users" element={<AdminUserList />} />
+        <Route path="/admin/messages" element={<AdminMessages />} />
 
-  <Route path='/*' element={<Error />} />
-</Routes>
-<Footer />
+        {/* Route fallback pour les erreurs 404 */}
+        <Route path='/*' element={<Error />} />
+      </Routes>
+
+      <Footer /> {/* pied de page */}
     </div>
   );
 }

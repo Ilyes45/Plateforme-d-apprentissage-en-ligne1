@@ -7,21 +7,25 @@ import './EditCourse.css';
 
 const EditCourse = () => {
   const dispatch = useDispatch();
-  const match = useMatch("/edit/:id");
-  const navigate = useNavigate();
+  const match = useMatch("/edit/:id"); // Récupère l'ID du cours depuis l'URL
+  const navigate = useNavigate(); // Pour rediriger après modification
 
+  // Récupération du cours depuis Redux
   const courseToGet = useSelector(state => state.courseReducer.courseToGet);
 
+  // État local pour gérer le formulaire
   const [newCourse, setNewCourse] = useState({
     title: '',
     description: '',
     category: ''
   });
 
+  // Charger le cours lors du montage du composant
   useEffect(() => {
     dispatch(getCourse(match.params.id));
   }, [dispatch, match.params.id]);
 
+  // Mettre à jour le formulaire lorsque le cours est chargé
   useEffect(() => {
     if (courseToGet && Object.keys(courseToGet).length !== 0) {
       setNewCourse({
@@ -32,6 +36,7 @@ const EditCourse = () => {
     }
   }, [courseToGet]);
 
+  // Met à jour l'état local à chaque changement dans le formulaire
   const handleChange = (e) => {
     setNewCourse({
       ...newCourse,
@@ -39,13 +44,15 @@ const EditCourse = () => {
     });
   };
 
+  // Soumettre les modifications
   const handleEdit = (e) => {
-  e.preventDefault();
-  dispatch(editCourse(match.params.id, newCourse))
-    .then(() => navigate('/cours'))
-    .catch(() => alert('Erreur lors de la modification'));
-};
+    e.preventDefault();
+    dispatch(editCourse(match.params.id, newCourse))
+      .then(() => navigate('/cours')) // Redirige vers la liste des cours après succès
+      .catch(() => alert('Erreur lors de la modification'));
+  };
 
+  // Affichage conditionnel pendant le chargement
   if (!courseToGet || Object.keys(courseToGet).length === 0) {
     return <p>Loading...</p>;
   }
@@ -54,6 +61,7 @@ const EditCourse = () => {
     <div className='edit-product-container'>
       <h2>Edit Course</h2>
       <Form>
+        {/* Champ titre */}
         <Form.Label>Title</Form.Label>
         <Form.Control
           type="text"
@@ -61,6 +69,7 @@ const EditCourse = () => {
           value={newCourse.title}
           onChange={handleChange}
         />
+        {/* Champ description */}
         <Form.Label>Description</Form.Label>
         <Form.Control
           type="text"
@@ -68,6 +77,7 @@ const EditCourse = () => {
           value={newCourse.description}
           onChange={handleChange}
         />
+        {/* Champ catégorie */}
         <Form.Label>Category</Form.Label>
         <Form.Control
           type="text"
@@ -75,12 +85,13 @@ const EditCourse = () => {
           value={newCourse.category}
           onChange={handleChange}
         />
+        {/* Boutons */}
         <Button variant="primary" type="button" onClick={handleEdit}>
           Edit
         </Button>
         <Button variant="secondary" onClick={() => navigate(-1)}>
-                Annuler
-              </Button>
+          Annuler
+        </Button>
       </Form>
     </div>
   );
